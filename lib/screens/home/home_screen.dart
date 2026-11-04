@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../config/routes.dart';
 import '../../widgets/app_bottom_navigation.dart';
+import '../menu/pollos_costillas_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -130,15 +131,29 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Row(
         children: [
-          const Expanded(
-            child: Text(
-              "Asadero Duke's Logo",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Color(0xFF76645D), fontSize: 10),
+          // LOGO REDONDEADO
+          SizedBox(
+            height: 28,
+            width: 28,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8), // Ajusta el radio aquí (ej. 14 para círculo perfecto si mide 28x28)
+              child: Image.asset(
+                'assets/logo.png',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Text(
+                    "Asadero Duke's",
+                    style: TextStyle(
+                      color: Color(0xFF76645D),
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
+              ),
             ),
           ),
-          const SizedBox(width: 5),
+          const SizedBox(width: 8),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
@@ -297,7 +312,12 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(12),
           onTap: () {
             if (index == 0 || index == 1) {
-              Navigator.pushReplacementNamed(context, AppRoutes.menu);
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (_) => const PollosCostillasScreen(),
+                ),
+              );
             } else {
               _message('Categoría: ${category.title.replaceAll('\n', ' ')}');
             }

@@ -1,30 +1,63 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:app_asadero_dukes/config/routes.dart';
 import 'package:app_asadero_dukes/main.dart';
+import 'package:app_asadero_dukes/screens/contacto/contacto_screen.dart';
+import 'package:app_asadero_dukes/screens/home/home_screen.dart';
+import 'package:app_asadero_dukes/screens/menu/pollos_costillas_screen.dart';
+import 'package:app_asadero_dukes/screens/nosotros/nosotros_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('App builds without crashing', (WidgetTester tester) async {
+    await tester.pumpWidget(const AsaderoDukesApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('¡Hola de nuevo!'), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('Home opens the chicken and ribs menu', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: const HomeScreen(),
+        routes: {
+          AppRoutes.home: (context) => const HomeScreen(),
+          AppRoutes.menu: (context) => const PollosCostillasScreen(),
+          AppRoutes.nosotros: (context) => const NosotrosScreen(),
+          AppRoutes.contacto: (context) => const ContactoScreen(),
+        },
+      ),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    await tester.tap(find.text('Pollos Asados').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Nuestros platillos'), findsOneWidget);
+    expect(find.text('Pollo Doble'), findsOneWidget);
+
+    await tester.tap(find.byType(ChoiceChip).at(2));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Costilla Medio'), findsOneWidget);
+    expect(find.text('Costilla Kilo'), findsOneWidget);
+    expect(find.text('Pollo Doble'), findsNothing);
+
+    await tester.tap(find.text('Nosotros').last);
+    await tester.pumpAndSettle();
+    expect(
+      find.text(
+        'Buena carne, mejores momentos. Descubre nuestros '
+        'platillos preparados al carbón y con leña.',
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Contacto').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Estamos para ayudarte'), findsOneWidget);
+
+    await tester.tap(find.text('Inicio').last);
+    await tester.pumpAndSettle();
+    expect(find.text('¿Qué vas a disfrutar hoy?'), findsOneWidget);
   });
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../config/routes.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -13,7 +15,6 @@ class _HomeScreenState extends State<HomeScreen> {
   static const Color fondo = Color(0xFFFFF8F5);
   static const Color tarjeta = Color(0xFFFFF1EC);
   static const Color rojo = Color(0xFFB51E0B);
-  static const Color naranja = Color(0xFFFFDCC5);
   static const Color texto = Color(0xFF171313);
 
   final List<Map<String, dynamic>> categorias = [
@@ -112,10 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const Expanded(
             child: Text(
               "Asadero Duke's Logo",
-              style: TextStyle(
-                fontSize: 10,
-                color: Color(0xFF55504D),
-              ),
+              style: TextStyle(fontSize: 10, color: Color(0xFF55504D)),
             ),
           ),
           const Column(
@@ -129,10 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: rojo,
                 ),
               ),
-              Text(
-                "MENÚ",
-                style: TextStyle(fontSize: 8),
-              ),
+              Text("MENÚ", style: TextStyle(fontSize: 8)),
             ],
           ),
           const SizedBox(width: 20),
@@ -148,11 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: rojo,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.person,
-              size: 14,
-              color: Colors.white,
-            ),
+            child: const Icon(Icons.person, size: 14, color: Colors.white),
           ),
         ],
       ),
@@ -165,21 +156,14 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 4,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
             color: const Color(0xFFF8E9DE),
             borderRadius: BorderRadius.circular(20),
           ),
           child: const Row(
             children: [
-              Icon(
-                Icons.circle,
-                size: 6,
-                color: Color(0xFFE87524),
-              ),
+              Icon(Icons.circle, size: 6, color: Color(0xFFE87524)),
               SizedBox(width: 5),
               Text(
                 'BRASAS ENCENDIDAS',
@@ -194,18 +178,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const Row(
           children: [
-            Icon(
-              Icons.access_time,
-              size: 11,
-              color: rojo,
-            ),
+            Icon(Icons.access_time, size: 11, color: rojo),
             SizedBox(width: 3),
             Text(
               'Dom 12:30 - 5:00 PM',
-              style: TextStyle(
-                fontSize: 7,
-                color: Color(0xFF4D2520),
-              ),
+              style: TextStyle(fontSize: 7, color: Color(0xFF4D2520)),
             ),
           ],
         ),
@@ -263,10 +240,12 @@ class _HomeScreenState extends State<HomeScreen> {
         return InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () {
+            if (index == 0 || index == 1) {
+              Navigator.pushReplacementNamed(context, AppRoutes.menu);
+              return;
+            }
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Seleccionaste ${categoria['nombre']}'),
-              ),
+              SnackBar(content: Text('Seleccionaste ${categoria['nombre']}')),
             );
           },
           child: Container(
@@ -305,10 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   categoria['descripcion'],
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 8,
-                    color: Color(0xFF755E55),
-                  ),
+                  style: const TextStyle(fontSize: 8, color: Color(0xFF755E55)),
                 ),
               ],
             ),
@@ -357,21 +333,14 @@ class _HomeScreenState extends State<HomeScreen> {
         children: marinados.map((item) {
           return Container(
             margin: const EdgeInsets.only(right: 6),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 6,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
               color: const Color(0xFFF6E8DF),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
               children: [
-                Icon(
-                  item[1] as IconData,
-                  size: 11,
-                  color: Color(0xFFB56A21),
-                ),
+                Icon(item[1] as IconData, size: 11, color: Color(0xFFB56A21)),
                 const SizedBox(width: 5),
                 Text(
                   item[0] as String,
@@ -452,17 +421,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 5),
                 const Row(
                   children: [
-                    Icon(
-                      Icons.star,
-                      size: 10,
-                      color: Color(0xFFE28B20),
-                    ),
+                    Icon(Icons.star, size: 10, color: Color(0xFFE28B20)),
                     Text(
                       ' 4.9 (140+)  •  Rinde 3-4 personas',
-                      style: TextStyle(
-                        fontSize: 8,
-                        color: Color(0xFF75513D),
-                      ),
+                      style: TextStyle(fontSize: 8, color: Color(0xFF75513D)),
                     ),
                   ],
                 ),
@@ -544,13 +506,8 @@ class _HomeScreenState extends State<HomeScreen> {
             width: double.infinity,
             height: 35,
             child: ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Próximamente: platillos recomendados'),
-                  ),
-                );
-              },
+              onPressed: () =>
+                  Navigator.pushReplacementNamed(context, AppRoutes.menu),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF9F1605),
                 foregroundColor: Colors.white,
@@ -564,10 +521,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     'Ver platillos recomendados',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(width: 8),
                   Icon(Icons.arrow_forward, size: 15),
@@ -596,9 +550,18 @@ class _HomeScreenState extends State<HomeScreen> {
       child: BottomNavigationBar(
         currentIndex: indiceSeleccionado,
         onTap: (index) {
+          final route = switch (index) {
+            0 => AppRoutes.home,
+            1 => AppRoutes.menu,
+            2 => AppRoutes.nosotros,
+            3 => AppRoutes.contacto,
+            _ => null,
+          };
+          if (route == null || index == indiceSeleccionado) return;
           setState(() {
             indiceSeleccionado = index;
           });
+          Navigator.pushReplacementNamed(context, route);
         },
         backgroundColor: const Color(0xFFFFF8F5),
         selectedItemColor: const Color(0xFF6B352B),
@@ -619,6 +582,10 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.outdoor_grill, size: 19),
             label: 'Nosotros',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.contact_support_outlined, size: 19),
+            label: 'Contacto',
           ),
         ],
       ),

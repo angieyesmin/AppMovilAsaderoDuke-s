@@ -78,11 +78,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 265,
                     width: double.infinity,
                     decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                          'assets/images/dukes_food.jpg',
-                        ),
-                        fit: BoxFit.cover,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xFF3A120D),
+                          Color(0xFFB7191B),
+                        ],
                       ),
                     ),
                   ),
