@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../config/routes.dart';
+import '../../widgets/app_bottom_navigation.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -13,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   static const Color naranja = Color(0xFFF36A24);
   static const Color texto = Color(0xFF241815);
 
-  int _selectedTab = 0;
+  final int _selectedTab = 0;
   String _selectedFilter = 'Mantequilla';
 
   final List<_Category> _categories = const [
@@ -96,8 +99,24 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigation(),
+      bottomNavigationBar: AppBottomNavigation(
+        currentIndex: _selectedTab,
+        onTap: _navigateToTab,
+      ),
     );
+  }
+
+  void _navigateToTab(int index) {
+    if (index == _selectedTab) return;
+
+    final route = switch (index) {
+      0 => AppRoutes.home,
+      1 => AppRoutes.menu,
+      2 => AppRoutes.nosotros,
+      3 => AppRoutes.contacto,
+      _ => null,
+    };
+    if (route != null) Navigator.pushReplacementNamed(context, route);
   }
 
   // ENCABEZADO
@@ -107,9 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: const BoxDecoration(
         color: Color(0xFFFFFDFC),
-        border: Border(
-          bottom: BorderSide(color: Color(0xFFF0E5DF)),
-        ),
+        border: Border(bottom: BorderSide(color: Color(0xFFF0E5DF))),
       ),
       child: Row(
         children: [
@@ -118,10 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
               "Asadero Duke's Logo",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Color(0xFF76645D),
-                fontSize: 10,
-              ),
+              style: TextStyle(color: Color(0xFF76645D), fontSize: 10),
             ),
           ),
           const SizedBox(width: 5),
@@ -152,10 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: () => _message('Próximamente: favoritos.'),
             visualDensity: VisualDensity.compact,
-            constraints: const BoxConstraints(
-              minWidth: 32,
-              minHeight: 34,
-            ),
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 34),
             icon: const Icon(
               Icons.local_fire_department_outlined,
               color: Color(0xFF65483D),
@@ -172,11 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: IconButton(
               padding: EdgeInsets.zero,
               onPressed: () => _message('Perfil de cliente'),
-              icon: const Icon(
-                Icons.person,
-                size: 14,
-                color: Colors.white,
-              ),
+              icon: const Icon(Icons.person, size: 14, color: Colors.white),
             ),
           ),
         ],
@@ -191,21 +198,14 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: const Color(0xFFF8E8DE),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Row(
                 children: [
-                  Icon(
-                    Icons.circle,
-                    color: Color(0xFFFF8A24),
-                    size: 6,
-                  ),
+                  Icon(Icons.circle, color: Color(0xFFFF8A24), size: 6),
                   SizedBox(width: 4),
                   Text(
                     'BRASAS ENCENDIDAS',
@@ -220,11 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const Spacer(),
-            const Icon(
-              Icons.access_time_rounded,
-              size: 10,
-              color: rojo,
-            ),
+            const Icon(Icons.access_time_rounded, size: 10, color: rojo),
             const SizedBox(width: 3),
             const Text(
               'Dom 12:30 - 5:00 PM',
@@ -299,18 +295,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
         return InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () => _message(
-            'Categoría: ${category.title.replaceAll('\n', ' ')}',
-          ),
+          onTap: () {
+            if (index == 0 || index == 1) {
+              Navigator.pushReplacementNamed(context, AppRoutes.menu);
+            } else {
+              _message('Categoría: ${category.title.replaceAll('\n', ' ')}');
+            }
+          },
           child: Container(
             decoration: BoxDecoration(
               color: const Color(0xFFFFF0EA),
               borderRadius: BorderRadius.circular(12),
             ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 5,
-              vertical: 10,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -344,10 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   category.subtitle,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Color(0xFF8A746B),
-                    fontSize: 8,
-                  ),
+                  style: const TextStyle(color: Color(0xFF8A746B), fontSize: 8),
                 ),
               ],
             ),
@@ -372,10 +366,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         Text(
           'Base: Sal y Pimienta',
-          style: TextStyle(
-            color: Color(0xFF805D50),
-            fontSize: 8,
-          ),
+          style: TextStyle(color: Color(0xFF805D50), fontSize: 8),
         ),
       ],
     );
@@ -405,10 +396,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 });
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 9,
-                  vertical: 6,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
                 decoration: BoxDecoration(
                   color: selected
                       ? const Color(0xFFF7E3D9)
@@ -422,11 +410,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      filter.$2,
-                      color: naranja,
-                      size: 12,
-                    ),
+                    Icon(filter.$2, color: naranja, size: 12),
                     const SizedBox(width: 5),
                     Text(
                       filter.$1,
@@ -466,11 +450,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Stack(
               fit: StackFit.expand,
               children: [
-                Icon(
-                  Icons.restaurant,
-                  color: Color(0xFF9B4B25),
-                  size: 29,
-                ),
+                Icon(Icons.restaurant, color: Color(0xFF9B4B25), size: 29),
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -543,11 +523,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 5),
                 const Row(
                   children: [
-                    Icon(
-                      Icons.star,
-                      color: Color(0xFFE7A02A),
-                      size: 10,
-                    ),
+                    Icon(Icons.star, color: Color(0xFFE7A02A), size: 10),
                     SizedBox(width: 2),
                     Text(
                       '4.9 (140+)  •  Rinde 3-4 personas',
@@ -639,7 +615,7 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 30,
             child: ElevatedButton(
               onPressed: () {
-                _message('Mostrando platillos recomendados.');
+                Navigator.pushReplacementNamed(context, AppRoutes.menu);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: rojo,
@@ -654,10 +630,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     'Ver platillos recomendados',
-                    style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w900,
-                    ),
+                    style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900),
                   ),
                   Spacer(),
                   Icon(Icons.arrow_forward, size: 14),
@@ -666,71 +639,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  // BARRA DE NAVEGACIÓN INFERIOR
-  Widget _buildBottomNavigation() {
-    const labels = ['Inicio', 'Menú', 'Nosotros'];
-
-    const icons = [
-      Icons.home_outlined,
-      Icons.restaurant_menu,
-      Icons.outdoor_grill_outlined,
-    ];
-
-    return Container(
-      height: 62,
-      decoration: const BoxDecoration(
-        color: Color(0xFFFFFDFC),
-        border: Border(
-          top: BorderSide(color: Color(0xFFEFE3DD)),
-        ),
-      ),
-      child: Row(
-        children: List.generate(labels.length, (index) {
-          final selected = _selectedTab == index;
-
-          return Expanded(
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  _selectedTab = index;
-                });
-
-                if (index != 0) {
-                  _message('Sección: ${labels[index]}');
-                }
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    icons[index],
-                    color: selected
-                        ? rojo
-                        : const Color(0xFF745B51),
-                    size: 17,
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    labels[index],
-                    style: TextStyle(
-                      color: selected
-                          ? rojo
-                          : const Color(0xFF745B51),
-                      fontSize: 8,
-                      fontWeight: selected
-                          ? FontWeight.w900
-                          : FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }),
       ),
     );
   }
