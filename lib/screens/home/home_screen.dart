@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../nosotros/nosotros_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -699,7 +701,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   _selectedTab = index;
                 });
 
-                if (index != 0) {
+                if (index == 2) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NosotrosScreen(),
+                    ),
+                  );
+                } else if (index != 0) {
                   _message('Sección: ${labels[index]}');
                 }
               },
