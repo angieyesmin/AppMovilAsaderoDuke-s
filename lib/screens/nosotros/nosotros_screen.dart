@@ -63,7 +63,7 @@ class NosotrosScreen extends StatelessWidget {
       0 => AppRoutes.home,
       1 => AppRoutes.menu,
       2 => AppRoutes.nosotros,
-      3 => AppRoutes.contacto,
+     
       _ => null,
     };
     if (route != null && index != 2) {

@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import '../home/home_screen.dart';
+import 'registro_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -54,6 +54,16 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  // IR A REGISTRO
+  void irARegistro() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const RegistroScreen(),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     correoController.dispose();
@@ -62,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFDFCFB),
@@ -96,9 +107,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Colors.black.withOpacity(0.45),
-                          Colors.black.withOpacity(0.65),
-                          Colors.black.withOpacity(0.95),
+                          Colors.black.withValues(alpha: 0.45),
+                          Colors.black.withValues(alpha: 0.65),
+                          Colors.black.withValues(alpha: 0.95),
                         ],
                       ),
                     ),
@@ -108,8 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     left: 20,
                     bottom: 29,
                     child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -118,8 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               width: 34,
                               decoration: BoxDecoration(
                                 color: naranja,
-                                borderRadius:
-                                    BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               child: const Icon(
                                 Icons.local_fire_department,
@@ -174,9 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 offset: const Offset(0, -8),
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(
-                    20, 18, 20, 20,
-                  ),
+                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
                   decoration: const BoxDecoration(
                     color: Color(0xFFFDFCFB),
                     borderRadius: BorderRadius.vertical(
@@ -185,8 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
 
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
 
                       const Text(
@@ -236,11 +242,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       TextField(
                         controller: correoController,
-                        keyboardType:
-                            TextInputType.emailAddress,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          hintText:
-                              'ejemplo@correo.com o 300 123 4567',
+                          hintText: 'ejemplo@correo.com o 300 123 4567',
                           hintStyle: const TextStyle(
                             color: Color(0xFFA4A0A0),
                             fontSize: 12,
@@ -252,27 +256,23 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           filled: true,
                           fillColor: Colors.white,
-                          contentPadding:
-                              const EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                             vertical: 15,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
                               color: Color(0xFFE7E3E0),
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
                               color: Color(0xFFE7E3E0),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
                               color: rojo,
                               width: 1.3,
@@ -285,8 +285,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // CONTRASEÑA
                       Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
                             'Contraseña',
@@ -298,8 +297,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                           GestureDetector(
                             onTap: () {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
                                     'Recuperación de contraseña',
@@ -337,8 +335,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {
-                                ocultarPassword =
-                                    !ocultarPassword;
+                                ocultarPassword = !ocultarPassword;
                               });
                             },
                             icon: Icon(
@@ -351,27 +348,23 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           filled: true,
                           fillColor: Colors.white,
-                          contentPadding:
-                              const EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                             vertical: 15,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
                               color: Color(0xFFE7E3E0),
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
                               color: Color(0xFFE7E3E0),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
                               color: rojo,
                               width: 1.3,
@@ -392,11 +385,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             backgroundColor: rojo,
                             foregroundColor: Colors.white,
                             elevation: 8,
-                            shadowColor:
-                                rojo.withOpacity(0.3),
+                            shadowColor: rojo.withValues(alpha: 0.3),
                             shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(15),
                             ),
                           ),
                           child: Row(
@@ -405,10 +396,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 30,
                                 width: 30,
                                 decoration: BoxDecoration(
-                                  color: Colors.white
-                                      .withOpacity(0.15),
-                                  borderRadius:
-                                      BorderRadius.circular(8),
+                                  color: Colors.white.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: const Icon(
                                   Icons.login,
@@ -449,9 +438,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
 
                           const Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 12),
                             child: Text(
                               'O CONÉCTATE CON',
                               style: TextStyle(
@@ -486,13 +473,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: Color(0xFFE7E3E0),
                                   ),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(11),
+                                    borderRadius: BorderRadius.circular(11),
                                   ),
                                 ),
                                 child: const Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
                                       'G',
@@ -525,19 +510,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: OutlinedButton(
                                 onPressed: () {},
                                 style: OutlinedButton.styleFrom(
-                                  backgroundColor:
-                                      const Color(0xFFE8F8F0),
+                                  backgroundColor: const Color(0xFFE8F8F0),
                                   side: const BorderSide(
                                     color: Color(0xFF9BEAC7),
                                   ),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(11),
+                                    borderRadius: BorderRadius.circular(11),
                                   ),
                                 ),
                                 child: const Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(
                                       Icons.chat_outlined,
@@ -574,11 +556,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             foregroundColor: Colors.white,
                             elevation: 3,
                             shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            padding:
-                                const EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 11,
                             ),
                           ),
@@ -588,10 +568,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 31,
                                 width: 31,
                                 decoration: BoxDecoration(
-                                  color: Colors.white
-                                      .withOpacity(0.2),
-                                  borderRadius:
-                                      BorderRadius.circular(8),
+                                  color: Colors.white.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: const Icon(
                                   Icons.restaurant,
@@ -603,10 +581,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               const Expanded(
                                 child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       'Pedir a Domicilio como Invitado',
@@ -618,9 +594,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     SizedBox(height: 2),
                                     Text(
                                       'Sin crear cuenta • Envío rápido',
-                                      style: TextStyle(
-                                        fontSize: 9,
-                                      ),
+                                      style: TextStyle(fontSize: 9),
                                     ),
                                   ],
                                 ),
@@ -651,9 +625,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
 
                             GestureDetector(
-                              onTap: () {
-                                // Conectar pantalla de registro.
-                              },
+                              onTap: irARegistro,
                               child: const Text(
                                 'Regístrate aquí',
                                 style: TextStyle(
@@ -674,9 +646,7 @@ class _LoginScreenState extends State<LoginScreen> {
               // PIE DE PÁGINA
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 9,
-                ),
+                padding: const EdgeInsets.symmetric(vertical: 9),
                 decoration: const BoxDecoration(
                   border: Border(
                     top: BorderSide(

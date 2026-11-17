@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'config/routes.dart';
-import 'screens/contacto/contacto_screen.dart';
+
 import 'screens/home/home_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/menu/pollos_costillas_screen.dart';
@@ -26,7 +26,7 @@ class AsaderoDukesApp extends StatelessWidget {
         AppRoutes.home: (context) => const HomeScreen(),
         AppRoutes.menu: (context) => const PollosCostillasScreen(),
         AppRoutes.nosotros: (context) => const NosotrosScreen(),
-        AppRoutes.contacto: (context) => const ContactoScreen(),
+
       },
       home: const LoginScreen(),
     );

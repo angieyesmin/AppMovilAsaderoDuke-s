@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:app_asadero_dukes/config/routes.dart';
 import 'package:app_asadero_dukes/main.dart';
-import 'package:app_asadero_dukes/screens/contacto/contacto_screen.dart';
+
 import 'package:app_asadero_dukes/screens/home/home_screen.dart';
 import 'package:app_asadero_dukes/screens/menu/pollos_costillas_screen.dart';
 import 'package:app_asadero_dukes/screens/nosotros/nosotros_screen.dart';
@@ -24,7 +24,7 @@ void main() {
           AppRoutes.home: (context) => const HomeScreen(),
           AppRoutes.menu: (context) => const PollosCostillasScreen(),
           AppRoutes.nosotros: (context) => const NosotrosScreen(),
-          AppRoutes.contacto: (context) => const ContactoScreen(),
+       
         },
       ),
     );
@@ -52,9 +52,8 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.tap(find.text('Contacto').last);
-    await tester.pumpAndSettle();
-    expect(find.text('Estamos para ayudarte'), findsOneWidget);
+   
+
 
     await tester.tap(find.text('Inicio').last);
     await tester.pumpAndSettle();
