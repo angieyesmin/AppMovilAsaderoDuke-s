@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import '../../config/routes.dart';
 import '../../widgets/app_bottom_navigation.dart';
@@ -63,7 +63,6 @@ class NosotrosScreen extends StatelessWidget {
       0 => AppRoutes.home,
       1 => AppRoutes.menu,
       2 => AppRoutes.nosotros,
-     
       _ => null,
     };
     if (route != null && index != 2) {
