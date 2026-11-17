@@ -15,6 +15,7 @@ class NosotrosScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const _TopBar(),
+      backgroundColor: const Color(0xFFFFF8F4),
       body: const SingleChildScrollView(
         child: Column(
           children: [
@@ -376,47 +377,12 @@ class _UbicacionCard extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: Column(
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: Container(
-              height: 140,
-              width: double.infinity,
-              color: const Color(0xFFDDE6E3),
-              child: const Stack(
-                children: [
-                  Positioned(
-                    left: 16,
-                    bottom: 14,
-                    child: Row(
-                      children: [
-                        Icon(Icons.location_on, color: kRojo, size: 22),
-                        SizedBox(width: 2),
-                        Text(
-                          'Local Asadero Duke\'s',
-                          style: TextStyle(
-                            color: kTexto,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          // Espacio reservado para agregar la ubicación cuando se compartan los datos.
+          const SizedBox(height: 140, width: double.infinity),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                const _FilaInfo(
-                  icono: Icons.location_on_outlined,
-                  etiqueta: 'Ubicación del Fogón',
-                  titulo: 'Av. Principal del Sabor #142',
-                  detalle: 'Col. Asaderos, Ciudad de México, CDMX',
-                ),
-                const Divider(height: 28, color: Color(0xFFEFE3DD)),
                 const _FilaInfo(
                   icono: Icons.access_time,
                   etiqueta: 'Horario de Brasas',
@@ -434,46 +400,6 @@ class _UbicacionCard extends StatelessWidget {
                   detalle: 'Costo calculado según kilometraje en zona cercana',
                 ),
                 const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.navigation_outlined, size: 18),
-                    label: const Text(
-                      'Cómo llegar (Maps / Waze)',
-                      style: TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: kRojo,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: OutlinedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.phone, size: 18),
-                    label: const Text(
-                      'Llamar al Asadero (+52 55 1234 5678)',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: kRojo,
-                      backgroundColor: kBeige,
-                      side: const BorderSide(color: Color(0xFFE8C9BD)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -665,7 +591,7 @@ class _RedesCard extends StatelessWidget {
                 child: _Red(
                   icono: Icons.camera_alt_outlined,
                   titulo: 'Instagram',
-                  subtitulo: '@asaderodukes',
+                  subtitulo: '',
                 ),
               ),
               SizedBox(width: 10),
@@ -673,7 +599,7 @@ class _RedesCard extends StatelessWidget {
                 child: _Red(
                   icono: Icons.share_outlined,
                   titulo: 'Facebook',
-                  subtitulo: "Asadero Duke's",
+                  subtitulo: '',
                 ),
               ),
               SizedBox(width: 10),
@@ -681,7 +607,7 @@ class _RedesCard extends StatelessWidget {
                 child: _Red(
                   icono: Icons.chat_outlined,
                   titulo: 'WhatsApp',
-                  subtitulo: 'Apartar pedido',
+                  subtitulo: '',
                 ),
               ),
             ],
