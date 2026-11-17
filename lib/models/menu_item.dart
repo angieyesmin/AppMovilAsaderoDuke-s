@@ -5,7 +5,6 @@ class MenuItem {
     required this.price,
     required this.category,
     required this.badge,
-    required this.image,
   });
 
   final String name;
@@ -13,5 +12,4 @@ class MenuItem {
   final int price;
   final String category;
   final String badge;
-  final String image;
 }
