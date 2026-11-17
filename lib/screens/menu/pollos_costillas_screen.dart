@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../../config/routes.dart';
 import '../../widgets/app_bottom_navigation.dart';
 
+import 'package:app_asadero_dukes/models/menu_item.dart';
+import 'package:app_asadero_dukes/screens/menu/dish_detail_screen.dart';
+
 class PollosCostillasScreen extends StatefulWidget {
   const PollosCostillasScreen({super.key});
 
@@ -15,40 +18,46 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
   static const Color _red = Color(0xFF9F1D0B);
   static const Color _text = Color(0xFF241815);
 
-  static const List<_Dish> _platillos = [
-    _Dish(
+  static const List<MenuItem> _platillos = [
+    MenuItem(
       name: 'Pollo Doble',
-      description: 'Pollo entero al carbón, ideal para compartir.',
-      price: 'Consultar',
+      description: 'Pollo entero al carbón, ideal para compartir. Incluye frijol, arroz, salsa artesanal y tortillas calientes.',
+      price: 235,
       category: 'Pollos Asados',
+      badge: 'Pollo',
       image: 'assets/images/pollo_doble.jpg',
     ),
-    _Dish(
+    MenuItem(
       name: 'Pollo Plus',
-      description: 'Pollo entero con guarnición de la casa.',
-      price: 'Consultar',
+      description: 'Pollo entero con guarnición de la casa: arroz, frijol, salsa y tortillas recién hechas.',
+      price: 285,
       category: 'Pollos Asados',
+      badge: 'Plus',
       image: 'assets/images/pollo_plus.jpg',
     ),
-    _Dish(
+    MenuItem(
       name: 'Medio Pollo',
-      description: 'Medio pollo asado con el sabor de Duke’s.',
-      price: 'Consultar',
+      description: 'Medio pollo asado con el sabor de Duke’s, frijol, arroz, salsa artesanal y tortillas calientes.',
+      price: 130,
       category: 'Pollos Asados',
+      badge: '1/2 Pollo',
       image: 'assets/images/medio_pollo.jpg',
     ),
-    _Dish(
+    MenuItem(
       name: 'Costilla Medio',
-      description: 'Costillas a la leña, glaseadas y suaves.',
-      price: 'Consultar',
+      description: 'Costillas a la leña, glaseadas y suaves. Asadas al momento, con guarniciones.',
+      price: 260,
       category: 'Costillas al Carbón',
+      badge: '1/2 Kg',
       image: 'assets/images/costilla_medio.jpg',
     ),
-    _Dish(
+    MenuItem(
       name: 'Costilla Kilo',
-      description: 'Un kilo de costillas preparado al carbón.',
-      price: 'Consultar',
+      description:
+          'Un kilo de costillas preparado al carbón, con doble guarnición.',
+      price: 425,
       category: 'Costillas al Carbón',
+      badge: '1 Kg Plus',
       image: 'assets/images/costilla_kilo.jpg',
     ),
   ];
@@ -60,9 +69,14 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
   ];
 
   String _selectedFilter = 'Todos';
-  int _cartCount = 0;
+  final List<CustomizedDishOrder> _cartOrders = [];
 
-  List<_Dish> get _filteredDishes {
+  int get _cartCount =>
+      _cartOrders.fold(0, (total, order) => total + order.quantity);
+  int get _cartTotal =>
+      _cartOrders.fold(0, (total, order) => total + order.totalPrice);
+
+  List<MenuItem> get _filteredDishes {
     if (_selectedFilter == 'Todos') {
       return _platillos;
     }
@@ -77,6 +91,126 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
         content: Text(message),
         backgroundColor: _red,
         behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Future<void> _openDishDetails(MenuItem dish) async {
+    final order = await Navigator.of(context).push<CustomizedDishOrder>(
+      MaterialPageRoute(
+        builder: (_) => DishDetailScreen(
+          dish: dish,
+          onNavigateToTab: (index) {
+            if (index == 1) {
+              Navigator.pop(context);
+            } else {
+              _navigateToTab(index);
+            }
+          },
+        ),
+      ),
+    );
+
+    if (!mounted || order == null) return;
+    _addOrderToCart(order);
+  }
+
+  void _addDishToCart(MenuItem dish) {
+    _addOrderToCart(
+      CustomizedDishOrder(
+        dish: dish,
+        quantity: 1,
+        marinade: 'Natural (Sal y pimienta base)',
+        cooking: 'Doradito Crujiente',
+        extras: const <String, int>{},
+        notes: '',
+        totalPrice: dish.price,
+      ),
+    );
+  }
+
+  void _addOrderToCart(CustomizedDishOrder order) {
+    setState(() {
+      _cartOrders.add(order);
+    });
+    _showMessage(
+      '${order.quantity} ${order.dish.name} agregado(s) al carrito.',
+    );
+  }
+
+  void _showCart() {
+    if (_cartOrders.isEmpty) {
+      _showMessage('Tu carrito está vacío.');
+      return;
+    }
+
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Tu carrito ($_cartCount)',
+                style: const TextStyle(
+                  color: _text,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: _cartOrders
+                      .map(
+                        (order) => ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(
+                            '${order.quantity} × ${order.dish.name}',
+                            style: const TextStyle(fontWeight: FontWeight.w700),
+                          ),
+                          subtitle: Text(
+                            [
+                              '${order.marinade} · ${order.cooking}',
+                              if (order.extras.isNotEmpty)
+                                order.extras.entries
+                                    .map(
+                                      (extra) =>
+                                          '${extra.value} × ${extra.key}',
+                                    )
+                                    .join(', '),
+                              if (order.notes.isNotEmpty)
+                                'Nota: ${order.notes}',
+                            ].join('\n'),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          trailing: Text('\$${order.totalPrice}'),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+              const Divider(),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  'Total: \$$_cartTotal MXN',
+                  style: const TextStyle(
+                    color: _red,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -103,37 +237,37 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
           ),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Center(
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  const Icon(Icons.shopping_bag_outlined, color: _red),
-                  if (_cartCount > 0)
-                    Positioned(
-                      right: -9,
-                      top: -8,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: _red,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          '$_cartCount',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                          ),
+          IconButton(
+            tooltip: 'Ver carrito',
+            onPressed: _showCart,
+            icon: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                const Icon(Icons.shopping_bag_outlined, color: _red),
+                if (_cartCount > 0)
+                  Positioned(
+                    right: -9,
+                    top: -8,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: _red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        '$_cartCount',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
           ),
+          const SizedBox(width: 8),
         ],
       ),
       body: SafeArea(
@@ -194,12 +328,8 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
                   final dish = _filteredDishes[index];
                   return _DishCard(
                     dish: dish,
-                    onAdd: () {
-                      setState(() {
-                        _cartCount++;
-                      });
-                      _showMessage('${dish.name} agregado al carrito.');
-                    },
+                    onTap: () => _openDishDetails(dish),
+                    onAdd: () => _addDishToCart(dish),
                   );
                 },
               ),
@@ -219,7 +349,6 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
       0 => AppRoutes.home,
       1 => AppRoutes.menu,
       2 => AppRoutes.nosotros,
-
       _ => null,
     };
     if (route != null && index != 1) {
@@ -229,136 +358,165 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
 }
 
 class _DishCard extends StatelessWidget {
-  const _DishCard({required this.dish, required this.onAdd});
+  const _DishCard({
+    required this.dish,
+    required this.onTap,
+    required this.onAdd,
+  });
 
-  final _Dish dish;
+  final MenuItem dish;
+  final VoidCallback onTap;
   final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFF0E5DF)),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Row(
-        children: [
-          SizedBox(
-            width: 112,
-            height: 126,
-            child: Image.asset(
-              dish.image,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: const Color(0xFFF8E8DE),
-                  child: const Center(
-                    child: Icon(
-                      Icons.local_fire_department_rounded,
-                      color: Color(0xFF9F1D0B),
-                      size: 36,
-                    ),
-                  ),
-                );
-              },
-            ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0xFFF0E5DF)),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    dish.category.toUpperCase(),
-                    style: const TextStyle(
-                      color: Color(0xFFB05B35),
-                      fontSize: 9,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: .4,
+          clipBehavior: Clip.antiAlias,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 112,
+                height: 126,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.asset(
+                      dish.image,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: const Color(0xFFF8E8DE),
+                          child: const Center(
+                            child: Icon(
+                              Icons.local_fire_department_rounded,
+                              color: Color(0xFF9F1D0B),
+                              size: 36,
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    dish.name,
-                    style: const TextStyle(
-                      color: Color(0xFF241815),
-                      fontSize: 15,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    dish.description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Color(0xFF806B62),
-                      fontSize: 11,
-                      height: 1.3,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
+                    Positioned(
+                      left: 5,
+                      bottom: 5,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.94),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
                         child: Text(
-                          dish.price,
+                          dish.badge,
                           style: const TextStyle(
-                            color: Color(0xFF9F1D0B),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w900,
+                            color: _PollosCostillasScreenState._text,
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 34,
-                        child: ElevatedButton(
-                          onPressed: onAdd,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF9F1D0B),
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(9),
-                            ),
-                          ),
-                          child: const Text(
-                            'Agregar',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        dish.category.toUpperCase(),
+                        style: const TextStyle(
+                          color: Color(0xFFB05B35),
+                          fontSize: 9,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: .4,
                         ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        dish.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: _PollosCostillasScreenState._text,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        dish.description,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Color(0xFF806B62),
+                          fontSize: 11,
+                          height: 1.3,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '\$${dish.price} MXN',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Color(0xFF9F1D0B),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 34,
+                            child: ElevatedButton(
+                              onPressed: onAdd,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF9F1D0B),
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(9),
+                                ),
+                              ),
+                              child: const Text(
+                                'Agregar',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
-}
-
-class _Dish {
-  const _Dish({
-    required this.name,
-    required this.description,
-    required this.price,
-    required this.category,
-    required this.image,
-  });
-
-  final String name;
-  final String description;
-  final String price;
-  final String category;
-  final String image;
 }
