@@ -1,6 +1,9 @@
+
 import 'package:flutter/material.dart';
 
-import '../nosotros/nosotros_screen.dart';
+import '../../config/routes.dart';
+import '../../widgets/app_bottom_navigation.dart';
+import '../menu/pollos_costillas_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   static const Color naranja = Color(0xFFF36A24);
   static const Color texto = Color(0xFF241815);
 
-  int _selectedTab = 0;
+  final int _selectedTab = 0;
   String _selectedFilter = 'Mantequilla';
 
   final List<_Category> _categories = const [
@@ -62,12 +65,27 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // NAVEGACIÓN INFERIOR
+  void _navigateToTab(int index) {
+    if (index == _selectedTab) return;
+
+    final route = switch (index) {
+      0 => AppRoutes.home,
+      1 => AppRoutes.menu,
+      2 => AppRoutes.nosotros,
+      _ => null,
+    };
+
+    if (route != null) {
+      Navigator.pushReplacementNamed(context, route);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: fondo,
       body: SafeArea(
-        bottom: false,
         child: Column(
           children: [
             _buildHeader(),
@@ -98,7 +116,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigation(),
+
+      // BARRA DE NAVEGACIÓN
+      bottomNavigationBar: AppBottomNavigation(
+        currentIndex: _selectedTab,
+        onTap: _navigateToTab,
+      ),
     );
   }
 
@@ -115,18 +138,28 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Row(
         children: [
-          const Expanded(
-            child: Text(
-              "Asadero Duke's Logo",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Color(0xFF76645D),
-                fontSize: 10,
+          SizedBox(
+            height: 28,
+            width: 28,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                'assets/logo.png',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Text(
+                    "Asadero Duke's",
+                    style: TextStyle(
+                      color: Color(0xFF76645D),
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
               ),
             ),
           ),
-          const SizedBox(width: 5),
+          const SizedBox(width: 8),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
@@ -301,9 +334,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
         return InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () => _message(
-            'Categoría: ${category.title.replaceAll('\n', ' ')}',
-          ),
+          onTap: () {
+            if (index == 0 || index == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (_) => const PollosCostillasScreen(),
+                ),
+              );
+            } else {
+              _message(
+                'Categoría: ${category.title.replaceAll('\n', ' ')}',
+              );
+            }
+          },
           child: Container(
             decoration: BoxDecoration(
               color: const Color(0xFFFFF0EA),
@@ -641,7 +685,10 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 30,
             child: ElevatedButton(
               onPressed: () {
-                _message('Mostrando platillos recomendados.');
+                Navigator.pushReplacementNamed(
+                  context,
+                  AppRoutes.menu,
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: rojo,
@@ -668,78 +715,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  // BARRA DE NAVEGACIÓN INFERIOR
-  Widget _buildBottomNavigation() {
-    const labels = ['Inicio', 'Menú', 'Nosotros'];
-
-    const icons = [
-      Icons.home_outlined,
-      Icons.restaurant_menu,
-      Icons.outdoor_grill_outlined,
-    ];
-
-    return Container(
-      height: 62,
-      decoration: const BoxDecoration(
-        color: Color(0xFFFFFDFC),
-        border: Border(
-          top: BorderSide(color: Color(0xFFEFE3DD)),
-        ),
-      ),
-      child: Row(
-        children: List.generate(labels.length, (index) {
-          final selected = _selectedTab == index;
-
-          return Expanded(
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  _selectedTab = index;
-                });
-
-                if (index == 2) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NosotrosScreen(),
-                    ),
-                  );
-                } else if (index != 0) {
-                  _message('Sección: ${labels[index]}');
-                }
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    icons[index],
-                    color: selected
-                        ? rojo
-                        : const Color(0xFF745B51),
-                    size: 17,
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    labels[index],
-                    style: TextStyle(
-                      color: selected
-                          ? rojo
-                          : const Color(0xFF745B51),
-                      fontSize: 8,
-                      fontWeight: selected
-                          ? FontWeight.w900
-                          : FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }),
       ),
     );
   }
