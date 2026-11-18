@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../config/routes.dart';
@@ -92,16 +91,16 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(9, 8, 9, 18),
+                padding: const EdgeInsets.fromLTRB(18, 10, 18, 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildAvailability(),
-                    const SizedBox(height: 17),
+                    const SizedBox(height: 20),
                     _buildWelcome(),
-                    const SizedBox(height: 13),
+                    const SizedBox(height: 18),
                     _buildCategories(),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 18),
                     _buildFilterTitle(),
                     const SizedBox(height: 8),
                     _buildFilters(),
@@ -128,21 +127,19 @@ class _HomeScreenState extends State<HomeScreen> {
   // ENCABEZADO
   Widget _buildHeader() {
     return Container(
-      height: 43,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      height: 58,
+      padding: const EdgeInsets.symmetric(horizontal: 18),
       decoration: const BoxDecoration(
         color: Color(0xFFFFFDFC),
-        border: Border(
-          bottom: BorderSide(color: Color(0xFFF0E5DF)),
-        ),
+        border: Border(bottom: BorderSide(color: Color(0xFFF0E5DF))),
       ),
       child: Row(
         children: [
           SizedBox(
-            height: 28,
-            width: 28,
+            height: 38,
+            width: 38,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(10),
               child: Image.asset(
                 'assets/logo.png',
                 fit: BoxFit.cover,
@@ -159,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
@@ -168,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   color: rojo,
                   fontWeight: FontWeight.w900,
-                  fontSize: 13,
+                  fontSize: 17,
                   height: 1,
                 ),
               ),
@@ -176,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 'MENÚ',
                 style: TextStyle(
                   color: texto,
-                  fontSize: 7,
+                  fontSize: 9,
                   fontWeight: FontWeight.bold,
                   letterSpacing: .5,
                 ),
@@ -187,19 +184,16 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: () => _message('Próximamente: favoritos.'),
             visualDensity: VisualDensity.compact,
-            constraints: const BoxConstraints(
-              minWidth: 32,
-              minHeight: 34,
-            ),
+            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
             icon: const Icon(
               Icons.local_fire_department_outlined,
               color: Color(0xFF65483D),
-              size: 18,
+              size: 22,
             ),
           ),
           Container(
-            height: 21,
-            width: 21,
+            height: 34,
+            width: 34,
             decoration: const BoxDecoration(
               color: rojo,
               shape: BoxShape.circle,
@@ -207,11 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: IconButton(
               padding: EdgeInsets.zero,
               onPressed: () => _message('Perfil de cliente'),
-              icon: const Icon(
-                Icons.person,
-                size: 14,
-                color: Colors.white,
-              ),
+              icon: const Icon(Icons.person, size: 14, color: Colors.white),
             ),
           ),
         ],
@@ -226,27 +216,20 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: const Color(0xFFF8E8DE),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Row(
                 children: [
-                  Icon(
-                    Icons.circle,
-                    color: Color(0xFFFF8A24),
-                    size: 6,
-                  ),
+                  Icon(Icons.circle, color: Color(0xFFFF8A24), size: 6),
                   SizedBox(width: 4),
                   Text(
                     'BRASAS ENCENDIDAS',
                     style: TextStyle(
                       color: Color(0xFF9B4A20),
-                      fontSize: 7,
+                      fontSize: 9,
                       fontWeight: FontWeight.w900,
                       letterSpacing: .25,
                     ),
@@ -255,26 +238,22 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const Spacer(),
-            const Icon(
-              Icons.access_time_rounded,
-              size: 10,
-              color: rojo,
-            ),
+            const Icon(Icons.access_time_rounded, size: 14, color: rojo),
             const SizedBox(width: 3),
             const Text(
               'Dom 12:30 - 5:00 PM',
               style: TextStyle(
                 color: Color(0xFF5E3C32),
-                fontSize: 8,
+                fontSize: 10,
                 fontWeight: FontWeight.w600,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 14),
         Container(
-          width: 27,
-          height: 3,
+          width: 40,
+          height: 4,
           decoration: BoxDecoration(
             color: const Color(0xFFF1DCD3),
             borderRadius: BorderRadius.circular(5),
@@ -294,13 +273,13 @@ class _HomeScreenState extends State<HomeScreen> {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: texto,
-              fontSize: 17,
+              fontSize: 24,
               fontWeight: FontWeight.w900,
               letterSpacing: -.45,
             ),
           ),
         ),
-        SizedBox(height: 5),
+        SizedBox(height: 8),
         Center(
           child: Text(
             'Elige una categoría y descubre nuestras\n'
@@ -308,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Color(0xFF806B62),
-              fontSize: 10,
+              fontSize: 14,
               height: 1.35,
             ),
           ),
@@ -325,9 +304,9 @@ class _HomeScreenState extends State<HomeScreen> {
       itemCount: _categories.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        childAspectRatio: 1.27,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 1.12,
       ),
       itemBuilder: (context, index) {
         final category = _categories[index];
@@ -343,9 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               );
             } else {
-              _message(
-                'Categoría: ${category.title.replaceAll('\n', ' ')}',
-              );
+              _message('Categoría: ${category.title.replaceAll('\n', ' ')}');
             }
           },
           child: Container(
@@ -353,16 +330,13 @@ class _HomeScreenState extends State<HomeScreen> {
               color: const Color(0xFFFFF0EA),
               borderRadius: BorderRadius.circular(12),
             ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 5,
-              vertical: 10,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: 34,
-                  width: 34,
+                  height: 44,
+                  width: 44,
                   decoration: BoxDecoration(
                     color: category.special
                         ? const Color(0xFFFFDCC4)
@@ -372,27 +346,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Icon(
                     category.icon,
                     color: category.special ? naranja : rojo,
-                    size: 19,
+                    size: 25,
                   ),
                 ),
-                const SizedBox(height: 7),
+                const SizedBox(height: 10),
                 Text(
                   category.title,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: texto,
-                    fontSize: 12,
+                    fontSize: 18,
                     height: 1.05,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Text(
                   category.subtitle,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Color(0xFF8A746B),
-                    fontSize: 8,
+                    fontSize: 11,
                   ),
                 ),
               ],
@@ -412,16 +386,13 @@ class _HomeScreenState extends State<HomeScreen> {
           'MARINADOS PARA TU ORDEN',
           style: TextStyle(
             color: Color(0xFF4B3028),
-            fontSize: 8,
+            fontSize: 11,
             fontWeight: FontWeight.w900,
           ),
         ),
         Text(
           'Base: Sal y Pimienta',
-          style: TextStyle(
-            color: Color(0xFF805D50),
-            fontSize: 8,
-          ),
+          style: TextStyle(color: Color(0xFF805D50), fontSize: 10),
         ),
       ],
     );
@@ -452,8 +423,8 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 9,
-                  vertical: 6,
+                  horizontal: 12,
+                  vertical: 8,
                 ),
                 decoration: BoxDecoration(
                   color: selected
@@ -468,17 +439,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      filter.$2,
-                      color: naranja,
-                      size: 12,
-                    ),
+                    Icon(filter.$2, color: naranja, size: 16),
                     const SizedBox(width: 5),
                     Text(
                       filter.$1,
                       style: const TextStyle(
                         color: Color(0xFF5D4036),
-                        fontSize: 9,
+                        fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -503,8 +470,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         children: [
           Container(
-            height: 57,
-            width: 52,
+            height: 78,
+            width: 78,
             decoration: BoxDecoration(
               color: const Color(0xFFE8C7B4),
               borderRadius: BorderRadius.circular(8),
@@ -512,11 +479,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Stack(
               fit: StackFit.expand,
               children: [
-                Icon(
-                  Icons.restaurant,
-                  color: Color(0xFF9B4B25),
-                  size: 29,
-                ),
+                Icon(Icons.restaurant, color: Color(0xFF9B4B25), size: 40),
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -535,7 +498,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 6,
+                          fontSize: 8,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -559,7 +522,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: texto,
-                          fontSize: 11,
+                          fontSize: 14,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
@@ -568,7 +531,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       '\$280',
                       style: TextStyle(
                         color: rojo,
-                        fontSize: 10,
+                        fontSize: 13,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -582,24 +545,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Color(0xFF745C52),
-                    fontSize: 8,
+                    fontSize: 11,
                     height: 1.3,
                   ),
                 ),
                 const SizedBox(height: 5),
                 const Row(
                   children: [
-                    Icon(
-                      Icons.star,
-                      color: Color(0xFFE7A02A),
-                      size: 10,
-                    ),
+                    Icon(Icons.star, color: Color(0xFFE7A02A), size: 14),
                     SizedBox(width: 2),
                     Text(
                       '4.9 (140+)  •  Rinde 3-4 personas',
                       style: TextStyle(
                         color: Color(0xFF8B5A3D),
-                        fontSize: 7,
+                        fontSize: 10,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -649,7 +608,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       '#TOQUEDELACASA',
                       style: TextStyle(
                         color: rojo,
-                        fontSize: 7,
+                        fontSize: 9,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -658,7 +617,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       '¡Al carbón y hasta agotar existencias!',
                       style: TextStyle(
                         color: texto,
-                        fontSize: 12,
+                        fontSize: 16,
                         height: 1.1,
                         fontWeight: FontWeight.w900,
                       ),
@@ -670,7 +629,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       'tus piezas preferidas.',
                       style: TextStyle(
                         color: Color(0xFF806A60),
-                        fontSize: 8,
+                        fontSize: 11,
                         height: 1.4,
                       ),
                     ),
@@ -682,13 +641,10 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 11),
           SizedBox(
             width: double.infinity,
-            height: 30,
+            height: 40,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(
-                  context,
-                  AppRoutes.menu,
-                );
+                Navigator.pushReplacementNamed(context, AppRoutes.menu);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: rojo,
@@ -703,13 +659,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     'Ver platillos recomendados',
-                    style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w900,
-                    ),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
                   ),
                   Spacer(),
-                  Icon(Icons.arrow_forward, size: 14),
+                  Icon(Icons.arrow_forward, size: 18),
                 ],
               ),
             ),
