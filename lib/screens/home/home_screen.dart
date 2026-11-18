@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../config/routes.dart';
+import '../../services/profile_storage.dart';
 import '../../widgets/app_bottom_navigation.dart';
+import '../profile/profile_screen.dart';
 import '../menu/pollos_costillas_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.userEmail});
+
+  final String? userEmail;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final int _selectedTab = 0;
   String _selectedFilter = 'Mantequilla';
+  Uint8List? _profileImage;
 
   final List<_Category> _categories = const [
     _Category(
@@ -62,6 +68,33 @@ class _HomeScreenState extends State<HomeScreen> {
         behavior: SnackBarBehavior.floating,
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileImage();
+  }
+
+  Future<void> _loadProfileImage() async {
+    try {
+      final image = await ProfileStorage.loadImage(widget.userEmail);
+      if (mounted) setState(() => _profileImage = image);
+    } on FormatException {
+      if (mounted) _message('No se pudo leer la foto de perfil guardada.');
+    } on PlatformException {
+      if (mounted) _message('No se pudo cargar la foto de perfil.');
+    }
+  }
+
+  Future<void> _openProfile() async {
+    await Navigator.push<void>(
+      context,
+      MaterialPageRoute<void>(
+        builder: (_) => ProfileScreen(initialEmail: widget.userEmail),
+      ),
+    );
+    await _loadProfileImage();
   }
 
   // NAVEGACIÓN INFERIOR
@@ -200,8 +233,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: IconButton(
               padding: EdgeInsets.zero,
-              onPressed: () => _message('Perfil de cliente'),
-              icon: const Icon(Icons.person, size: 14, color: Colors.white),
+              onPressed: _openProfile,
+              icon: _profileImage == null
+                  ? const Icon(Icons.person, size: 14, color: Colors.white)
+                  : CircleAvatar(
+                      key: const ValueKey('home-profile-avatar'),
+                      radius: 16,
+                      backgroundImage: MemoryImage(_profileImage!),
+                    ),
             ),
           ),
         ],

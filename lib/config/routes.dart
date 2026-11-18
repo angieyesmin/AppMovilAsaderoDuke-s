@@ -4,5 +4,4 @@ class AppRoutes {
   static const home = '/home';
   static const menu = '/menu';
   static const nosotros = '/nosotros';
-
 }
