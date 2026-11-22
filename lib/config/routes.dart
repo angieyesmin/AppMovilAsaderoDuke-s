@@ -3,5 +3,7 @@ class AppRoutes {
 
   static const home = '/home';
   static const menu = '/menu';
+  static const guarniciones = '/guarniciones';
+  static const bebidas = '/bebidas';
   static const nosotros = '/nosotros';
 }

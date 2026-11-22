@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'config/routes.dart';
 
 import 'screens/home/home_screen.dart';
 import 'screens/auth/login_screen.dart';
+import 'screens/menu/bebidas_screen.dart';
+import 'screens/menu/guarniciones_extras_screen.dart';
 import 'screens/menu/pollos_costillas_screen.dart';
 import 'screens/nosotros/nosotros_screen.dart';
 
@@ -18,15 +21,13 @@ class AsaderoDukesApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Asadero Duke's",
-      theme: ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Roboto',
-      ),
+      theme: ThemeData(useMaterial3: true, fontFamily: 'Roboto'),
       routes: {
         AppRoutes.home: (context) => const HomeScreen(),
         AppRoutes.menu: (context) => const PollosCostillasScreen(),
+        AppRoutes.guarniciones: (context) => const GuarnicionesExtrasScreen(),
+        AppRoutes.bebidas: (context) => const BebidasScreen(),
         AppRoutes.nosotros: (context) => const NosotrosScreen(),
-
       },
       home: const LoginScreen(),
     );

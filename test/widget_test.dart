@@ -8,6 +8,8 @@ import 'package:app_asadero_dukes/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:app_asadero_dukes/screens/home/home_screen.dart';
+import 'package:app_asadero_dukes/screens/menu/bebidas_screen.dart';
+import 'package:app_asadero_dukes/screens/menu/guarniciones_extras_screen.dart';
 import 'package:app_asadero_dukes/screens/menu/pollos_costillas_screen.dart';
 import 'package:app_asadero_dukes/screens/nosotros/nosotros_screen.dart';
 
@@ -35,29 +37,106 @@ void main() {
     await tester.tap(find.text('Pollos Asados').first);
     await tester.pumpAndSettle();
 
-    expect(find.text('Nuestros platillos'), findsOneWidget);
+    expect(find.text('Pollos & Costillas'), findsOneWidget);
     expect(find.text('Pollo Doble'), findsOneWidget);
 
-    await tester.tap(find.byType(ChoiceChip).at(2));
+    await tester.ensureVisible(find.text('Costillas al Carbón').first);
+    await tester.tap(find.text('Costillas al Carbón').first);
     await tester.pumpAndSettle();
 
-    expect(find.text('Costilla Medio'), findsOneWidget);
-    expect(find.text('Costilla Kilo'), findsOneWidget);
+    expect(find.text('Costilla 1/2 kg'), findsOneWidget);
+    expect(find.text('Costilla 1 kg "Plus"'), findsOneWidget);
     expect(find.text('Pollo Doble'), findsNothing);
 
     await tester.tap(find.text('Nosotros').last);
     await tester.pumpAndSettle();
-    expect(
-      find.text(
-        'Buena carne, mejores momentos. Descubre nuestros '
-        'platillos preparados al carbón y con leña.',
-      ),
-      findsOneWidget,
-    );
+    expect(find.text('Nuestra Historia'), findsOneWidget);
 
     await tester.tap(find.text('Inicio').last);
     await tester.pumpAndSettle();
     expect(find.text('¿Qué vas a disfrutar hoy?'), findsOneWidget);
+  });
+
+  testWidgets('Home opens sides menu and adds selected salsa to cart', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: const HomeScreen(),
+        routes: {
+          AppRoutes.home: (context) => const HomeScreen(),
+          AppRoutes.menu: (context) => const PollosCostillasScreen(),
+          AppRoutes.guarniciones: (context) => const GuarnicionesExtrasScreen(),
+          AppRoutes.nosotros: (context) => const NosotrosScreen(),
+        },
+      ),
+    );
+
+    await tester.ensureVisible(find.text('Guarniciones\n& Extras'));
+    await tester.tap(find.text('Guarniciones\n& Extras'));
+    await tester.pumpAndSettle();
+    expect(find.text('Guarniciones & Extras'), findsOneWidget);
+    expect(find.text('Frijoles Charros / Refritos'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('Salsas Tatemadas'));
+    await tester.tap(find.text('Salsas Tatemadas'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Agregar Salsa Tatemada'));
+    await tester.tap(find.textContaining('Verde Asada').first);
+    await tester.tap(find.text('Agregar Salsa Tatemada'));
+    await tester.pumpAndSettle();
+
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, 1000));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.shopping_bag_outlined));
+    await tester.pumpAndSettle();
+    expect(find.text('1 × Salsa Tatemada verde asada'), findsOneWidget);
+    expect(find.text('Total: \$40 MXN'), findsOneWidget);
+  });
+
+  testWidgets('Home opens beverages and adds the selected flavor to cart', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: const HomeScreen(),
+        routes: {
+          AppRoutes.home: (context) => const HomeScreen(),
+          AppRoutes.menu: (context) => const PollosCostillasScreen(),
+          AppRoutes.guarniciones: (context) => const GuarnicionesExtrasScreen(),
+          AppRoutes.bebidas: (context) => const BebidasScreen(),
+          AppRoutes.nosotros: (context) => const NosotrosScreen(),
+        },
+      ),
+    );
+
+    await tester.ensureVisible(find.text('Refrescos &\nBebidas'));
+    await tester.tap(find.text('Refrescos &\nBebidas'));
+    await tester.pumpAndSettle();
+    expect(find.text('Bebidas & Refrescos'), findsOneWidget);
+    expect(find.text('Coca-Cola 2.5 Litros'), findsOneWidget);
+
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -350));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Mundet').first);
+    await tester.tap(find.text('Mundet').first);
+    await tester.ensureVisible(
+      find.byKey(const ValueKey('beverage-add-Refresco Familiar 1.35 Litros')),
+    );
+    await tester.tap(
+      find.byKey(const ValueKey('beverage-add-Refresco Familiar 1.35 Litros')),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, 1000));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.shopping_bag_outlined));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('1 × Refresco Familiar 1.35 Litros · Mundet'),
+      findsOneWidget,
+    );
+    expect(find.text('Total: \$35 MXN'), findsOneWidget);
   });
 
   testWidgets('Home profile icon opens the account profile', (
