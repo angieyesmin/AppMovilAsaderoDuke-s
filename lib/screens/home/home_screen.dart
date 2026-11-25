@@ -1,31 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import '../../config/routes.dart';
+import '../../services/auth_service.dart';
 import '../../services/profile_storage.dart';
 import '../../widgets/app_bottom_navigation.dart';
 import '../profile/profile_screen.dart';
 import '../menu/pollos_costillas_screen.dart';
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, this.userEmail});
-
   final String? userEmail;
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 class _HomeScreenState extends State<HomeScreen> {
   static const Color fondo = Color(0xFFFFF8F5);
   static const Color rojo = Color(0xFF9F1D0B);
   static const Color naranja = Color(0xFFF36A24);
   static const Color texto = Color(0xFF241815);
-
   final int _selectedTab = 0;
   String _selectedFilter = 'Mantequilla';
   Uint8List? _profileImage;
-
   final List<_Category> _categories = const [
     _Category(
       title: 'Pollos Asados',
@@ -59,8 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
       special: true,
     ),
   ];
-
   void _message(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -69,50 +63,75 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
   @override
   void initState() {
     super.initState();
     _loadProfileImage();
   }
-
   Future<void> _loadProfileImage() async {
+    if (!AuthService.sesionActiva) {
+      if (mounted) {
+        setState(() {
+          _profileImage = null;
+        });
+      }
+      return;
+    }
+    final correo = AuthService.usuario?['correo']?.toString();
+    final tokenActual = AuthService.token;
+    if (correo == null || correo.isEmpty) {
+      if (mounted) {
+        setState(() {
+          _profileImage = null;
+        });
+      }
+      return;
+    }
     try {
-      final image = await ProfileStorage.loadImage(widget.userEmail);
-      if (mounted) setState(() => _profileImage = image);
+      final image = await ProfileStorage.loadImage(correo);
+      if (!mounted) return;
+      if (AuthService.token != tokenActual) return;
+      setState(() {
+        _profileImage = image;
+      });
     } on FormatException {
-      if (mounted) _message('No se pudo leer la foto de perfil guardada.');
+      if (mounted) {
+        _message('No se pudo leer la foto de perfil guardada.');
+      }
     } on PlatformException {
-      if (mounted) _message('No se pudo cargar la foto de perfil.');
+      if (mounted) {
+        _message('No se pudo cargar la foto de perfil.');
+      }
     }
   }
-
   Future<void> _openProfile() async {
+    // Verificar que el usuario haya iniciado sesión.
+    if (!AuthService.sesionActiva) {
+      _message('Inicia sesión para consultar tu perfil.');
+      return;
+    }
+    final correo = AuthService.usuario?['correo']?.toString();
     await Navigator.push<void>(
       context,
       MaterialPageRoute<void>(
-        builder: (_) => ProfileScreen(initialEmail: widget.userEmail),
+        builder: (_) => ProfileScreen(initialEmail: correo),
       ),
     );
+    if (!mounted) return;
     await _loadProfileImage();
   }
-
-  // NAVEGACIÓN INFERIOR
   void _navigateToTab(int index) {
     if (index == _selectedTab) return;
-
     final route = switch (index) {
       0 => AppRoutes.home,
       1 => AppRoutes.menu,
       2 => AppRoutes.nosotros,
       _ => null,
     };
-
     if (route != null) {
       Navigator.pushReplacementNamed(context, route);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,16 +167,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-
-      // BARRA DE NAVEGACIÓN
       bottomNavigationBar: AppBottomNavigation(
         currentIndex: _selectedTab,
         onTap: _navigateToTab,
       ),
     );
   }
-
-  // ENCABEZADO
   Widget _buildHeader() {
     return Container(
       height: 58,
@@ -215,7 +230,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const Spacer(),
           IconButton(
-            onPressed: () => _message('Próximamente: favoritos.'),
+            onPressed: () {
+              _message('Próximamente: favoritos.');
+            },
             visualDensity: VisualDensity.compact,
             constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
             icon: const Icon(
@@ -233,6 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: IconButton(
               padding: EdgeInsets.zero,
+              tooltip: 'Mi perfil',
               onPressed: _openProfile,
               icon: _profileImage == null
                   ? const Icon(Icons.person, size: 14, color: Colors.white)
@@ -247,8 +265,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // ESTADO DEL ASADERO
   Widget _buildAvailability() {
     return Column(
       children: [
@@ -301,8 +317,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
-  // MENSAJE DE BIENVENIDA
   Widget _buildWelcome() {
     return const Column(
       children: [
@@ -334,8 +348,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
-  // CATEGORÍAS
   Widget _buildCategories() {
     return GridView.builder(
       shrinkWrap: true,
@@ -349,7 +361,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       itemBuilder: (context, index) {
         final category = _categories[index];
-
         return InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () {
@@ -365,7 +376,10 @@ class _HomeScreenState extends State<HomeScreen> {
             } else if (index == 4) {
               Navigator.pushNamed(context, AppRoutes.bebidas);
             } else {
-              _message('Categoría: ${category.title.replaceAll('\n', ' ')}');
+              _message(
+                'Categoría: '
+                '${category.title.replaceAll('\n', ' ')}',
+              );
             }
           },
           child: Container(
@@ -419,8 +433,6 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-
-  // TÍTULO DE MARINADOS
   Widget _buildFilterTitle() {
     return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -440,21 +452,17 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
-  // FILTROS DE MARINADOS
   Widget _buildFilters() {
     final filters = [
       ('Mantequilla', Icons.restaurant),
       ('Chimichurri', Icons.spa_outlined),
       ('BBQ Ahumada', Icons.ramen_dining),
     ];
-
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: filters.map((filter) {
           final selected = _selectedFilter == filter.$1;
-
           return Padding(
             padding: const EdgeInsets.only(right: 6),
             child: InkWell(
@@ -501,8 +509,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // PRODUCTO DESTACADO
   Widget _buildProductCard() {
     return Container(
       padding: const EdgeInsets.all(10),
@@ -614,8 +620,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // PROMOCIÓN
   Widget _buildPromoCard() {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -715,14 +719,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-// MODELO DE CATEGORÍAS
 class _Category {
   final String title;
   final String subtitle;
   final IconData icon;
   final bool special;
-
   const _Category({
     required this.title,
     required this.subtitle,

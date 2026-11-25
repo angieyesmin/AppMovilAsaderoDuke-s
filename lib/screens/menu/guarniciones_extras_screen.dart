@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-
 import 'package:app_asadero_dukes/config/routes.dart';
 import 'package:app_asadero_dukes/widgets/app_bottom_navigation.dart';
-
 class GuarnicionesExtrasScreen extends StatefulWidget {
   const GuarnicionesExtrasScreen({super.key});
-
   @override
   State<GuarnicionesExtrasScreen> createState() =>
       _GuarnicionesExtrasScreenState();
 }
-
 class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
   static const Color _background = Color(0xFFFFF8F5);
   static const Color _red = Color(0xFF9F1D0B);
   static const Color _text = Color(0xFF241815);
   static const Color _muted = Color(0xFF806B62);
-
   static const List<_SideDish> _sideDishes = [
     _SideDish(
       name: 'Frijoles Charros / Refritos',
@@ -43,7 +38,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       icon: Icons.breakfast_dining_rounded,
     ),
   ];
-
   static const List<String> _filters = [
     'Todos',
     'Frijoles & Arroz',
@@ -56,23 +50,19 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
     'BBQ Ahumada',
     'Tamarindo Agridulce',
   ];
-
   String _selectedFilter = 'Todos';
   String _selectedSalsa = 'Roja Tatemada';
   String _selectedMarinade = _marinades.first;
   final List<_CartEntry> _cart = [];
-
   int get _cartCount => _cart.fold(0, (total, item) => total + item.quantity);
   int get _cartTotal =>
       _cart.fold(0, (total, item) => total + item.price * item.quantity);
-
   List<_SideDish> get _visibleDishes {
     if (_selectedFilter == 'Todos') return _sideDishes;
     return _sideDishes
         .where((dish) => dish.category == _selectedFilter)
         .toList();
   }
-
   void _addToCart(String name, int price) {
     setState(() {
       _cart.add(_CartEntry(name: name, price: price, quantity: 1));
@@ -85,7 +75,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       ),
     );
   }
-
   void _showCart() {
     if (_cart.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -97,7 +86,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       );
       return;
     }
-
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -152,7 +140,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       ),
     );
   }
-
   void _navigateToTab(int index) {
     final route = switch (index) {
       0 => AppRoutes.home,
@@ -162,7 +149,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
     };
     if (route != null) Navigator.pushReplacementNamed(context, route);
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -199,7 +185,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       ),
     );
   }
-
   List<Widget> _buildProductSections() {
     final sections = <Widget>[];
     for (var index = 0; index < _visibleDishes.length; index++) {
@@ -222,7 +207,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
         );
       }
     }
-
     if (_selectedFilter == 'Salsas Tatemadas') {
       sections.add(
         Padding(
@@ -233,7 +217,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
     }
     return sections;
   }
-
   Widget _buildBrandBar() {
     return Row(
       children: [
@@ -291,7 +274,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       ],
     );
   }
-
   Widget _buildTitleBar() {
     return Row(
       children: [
@@ -371,7 +353,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       ],
     );
   }
-
   Widget _buildWelcomeCard() {
     return Container(
       padding: const EdgeInsets.all(15),
@@ -421,7 +402,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       ),
     );
   }
-
   Widget _buildFilters() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -451,7 +431,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       ),
     );
   }
-
   Widget _buildSalsaCard() {
     return Container(
       padding: const EdgeInsets.all(14),
@@ -527,7 +506,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       ),
     );
   }
-
   Widget _salsaChoice(String name, String emoji) {
     final selected = _selectedSalsa == name;
     return Expanded(
@@ -553,7 +531,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       ),
     );
   }
-
   Widget _buildMarinadeCard() {
     return Container(
       padding: const EdgeInsets.all(14),
@@ -641,7 +618,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       ),
     );
   }
-
   Widget _buildInfoCard() {
     return Container(
       padding: const EdgeInsets.all(14),
@@ -667,7 +643,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       ),
     );
   }
-
   Widget _primaryButton({
     required String label,
     required IconData icon,
@@ -692,7 +667,6 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
       ),
     );
   }
-
   static BoxDecoration get _cardDecoration => BoxDecoration(
     color: Colors.white,
     borderRadius: BorderRadius.circular(15),
@@ -701,13 +675,10 @@ class _GuarnicionesExtrasScreenState extends State<GuarnicionesExtrasScreen> {
     ],
   );
 }
-
 class _DishCard extends StatelessWidget {
   const _DishCard({required this.dish, required this.onAdd});
-
   final _SideDish dish;
   final VoidCallback onAdd;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -793,18 +764,15 @@ class _DishCard extends StatelessWidget {
     );
   }
 }
-
 class _FoodIllustration extends StatelessWidget {
   const _FoodIllustration({
     required this.icon,
     required this.label,
     required this.color,
   });
-
   final IconData icon;
   final String label;
   final Color color;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -842,7 +810,6 @@ class _FoodIllustration extends StatelessWidget {
     );
   }
 }
-
 class _SideDish {
   const _SideDish({
     required this.name,
@@ -852,7 +819,6 @@ class _SideDish {
     required this.category,
     required this.icon,
   });
-
   final String name;
   final String description;
   final int price;
@@ -860,14 +826,12 @@ class _SideDish {
   final String category;
   final IconData icon;
 }
-
 class _CartEntry {
   const _CartEntry({
     required this.name,
     required this.price,
     required this.quantity,
   });
-
   final String name;
   final int price;
   final int quantity;

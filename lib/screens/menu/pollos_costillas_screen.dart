@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-
 import 'package:app_asadero_dukes/config/routes.dart';
 import 'package:app_asadero_dukes/models/menu_item.dart';
 import 'package:app_asadero_dukes/screens/menu/dish_detail_screen.dart';
 import 'package:app_asadero_dukes/widgets/app_bottom_navigation.dart';
-
 class PollosCostillasScreen extends StatefulWidget {
   const PollosCostillasScreen({super.key});
-
   @override
   State<PollosCostillasScreen> createState() => _PollosCostillasScreenState();
 }
-
 class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
   static const Color _background = Color(0xFFF8F1EE);
   static const Color _red = Color(0xFF9F1D0B);
@@ -19,7 +15,6 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
   static const Color _orange = Color(0xFFFFB10A);
   static const Color _text = Color(0xFF241815);
   static const Color _muted = Color(0xFF7C655C);
-
   static const List<MenuItem> _platillos = [
     MenuItem(
       name: 'Pollo Doble',
@@ -58,21 +53,17 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
       badge: '1 Kg Plus',
     ),
   ];
-
   static const List<String> _filters = [
     'Todos (5)',
     'Pollos Asados',
     'Costillas al Carbón',
   ];
-
   String _selectedFilter = 'Todos (5)';
   final List<CustomizedDishOrder> _cartOrders = [];
-
   int get _cartCount =>
       _cartOrders.fold(0, (total, order) => total + order.quantity);
   int get _cartTotal =>
       _cartOrders.fold(0, (total, order) => total + order.totalPrice);
-
   List<MenuItem> get _filteredDishes {
     if (_selectedFilter == 'Todos (5)') {
       return _platillos;
@@ -81,7 +72,6 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
         .where((dish) => dish.category == _selectedFilter)
         .toList();
   }
-
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -91,7 +81,6 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
       ),
     );
   }
-
   Future<void> _openDishDetails(MenuItem dish) async {
     final order = await Navigator.of(context).push<CustomizedDishOrder>(
       MaterialPageRoute(
@@ -107,11 +96,9 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
         ),
       ),
     );
-
     if (!mounted || order == null) return;
     _addOrderToCart(order);
   }
-
   void _addDishToCart(MenuItem dish) {
     _addOrderToCart(
       CustomizedDishOrder(
@@ -125,7 +112,6 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
       ),
     );
   }
-
   void _addOrderToCart(CustomizedDishOrder order) {
     setState(() {
       _cartOrders.add(order);
@@ -134,13 +120,11 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
       '${order.quantity} ${order.dish.name} agregado(s) al carrito.',
     );
   }
-
   void _showCart() {
     if (_cartOrders.isEmpty) {
       _showMessage('Tu carrito está vacío.');
       return;
     }
-
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -211,7 +195,6 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
       ),
     );
   }
-
   void _navigateToTab(int index) {
     final route = switch (index) {
       0 => AppRoutes.home,
@@ -219,17 +202,14 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
       2 => AppRoutes.nosotros,
       _ => null,
     };
-
     if (route != null && index != 1) {
       Navigator.pushReplacementNamed(context, route);
       return;
     }
-
     if (index == 3) {
       _showMessage('Próximamente: contacto.');
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -364,7 +344,6 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
       ),
     );
   }
-
   Widget _buildTopBar() {
     return Padding(
       padding: const EdgeInsets.only(top: 2),
@@ -426,7 +405,6 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
       ),
     );
   }
-
   Widget _buildPromoBanner() {
     return Container(
       padding: const EdgeInsets.all(14),
@@ -500,7 +478,6 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
       ),
     );
   }
-
   Widget _buildFilterTabs() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -556,7 +533,6 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
       ),
     );
   }
-
   Widget _buildInfoCard() {
     return Container(
       width: double.infinity,
@@ -615,7 +591,6 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
       ),
     );
   }
-
   Widget _infoTag(String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -634,18 +609,15 @@ class _PollosCostillasScreenState extends State<PollosCostillasScreen> {
     );
   }
 }
-
 class _DishCard extends StatelessWidget {
   const _DishCard({
     required this.dish,
     required this.onTap,
     required this.onAdd,
   });
-
   final MenuItem dish;
   final VoidCallback onTap;
   final VoidCallback onAdd;
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -780,7 +752,6 @@ class _DishCard extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildChoiceBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
@@ -827,12 +798,9 @@ class _DishCard extends StatelessWidget {
     );
   }
 }
-
 class _DishImage extends StatelessWidget {
   const _DishImage({required this.dish});
-
   final MenuItem dish;
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(

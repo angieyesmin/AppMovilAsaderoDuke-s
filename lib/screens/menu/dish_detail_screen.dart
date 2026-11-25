@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:app_asadero_dukes/models/menu_item.dart';
 import 'package:app_asadero_dukes/widgets/app_bottom_navigation.dart';
-
 class CustomizedDishOrder {
   const CustomizedDishOrder({
     required this.dish,
@@ -13,7 +11,6 @@ class CustomizedDishOrder {
     required this.notes,
     required this.totalPrice,
   });
-
   final MenuItem dish;
   final int quantity;
   final String marinade;
@@ -22,28 +19,23 @@ class CustomizedDishOrder {
   final String notes;
   final int totalPrice;
 }
-
 class DishDetailScreen extends StatefulWidget {
   const DishDetailScreen({
     required this.dish,
     required this.onNavigateToTab,
     super.key,
   });
-
   final MenuItem dish;
   final ValueChanged<int> onNavigateToTab;
-
   @override
   State<DishDetailScreen> createState() => _DishDetailScreenState();
 }
-
 class _DishDetailScreenState extends State<DishDetailScreen> {
   static const Color _red = Color(0xFF9F1D0B);
   static const Color _text = Color(0xFF241815);
   static const Color _muted = Color(0xFF7C655C);
   static const Color _surface = Color(0xFFF5EAE4);
   static const Color _background = Color(0xFFFFF8F5);
-
   static const List<_MarinadeOption> _marinades = [
     _MarinadeOption(
       name: 'Natural (Sal y pimienta base)',
@@ -71,7 +63,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       extraPrice: 10,
     ),
   ];
-
   static const List<_ExtraOption> _extras = [
     _ExtraOption(
       name: '1/2 Frijol Charro Extra',
@@ -95,36 +86,30 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       icon: Icons.local_cafe_outlined,
     ),
   ];
-
   static const List<String> _cookingOptions = [
     'Doradito Crujiente',
     'Suave y Jugoso',
   ];
-
   final Map<String, int> _extraCounts = {};
   final TextEditingController _notesController = TextEditingController();
   String _selectedMarinade = _marinades.first.name;
   String _selectedCooking = _cookingOptions.first;
   int _quantity = 1;
-
   int get _extrasTotal => _extras.fold(
     0,
     (total, extra) => total + extra.price * (_extraCounts[extra.name] ?? 0),
   );
-
   int get _totalPrice {
     final marinadePrice = _marinades
         .firstWhere((option) => option.name == _selectedMarinade)
         .extraPrice;
     return (widget.dish.price + marinadePrice) * _quantity + _extrasTotal;
   }
-
   @override
   void dispose() {
     _notesController.dispose();
     super.dispose();
   }
-
   void _addOrder() {
     Navigator.of(context).pop(
       CustomizedDishOrder(
@@ -138,7 +123,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ),
     );
   }
-
   void _changeExtra(_ExtraOption extra, int change) {
     setState(() {
       final nextCount = (_extraCounts[extra.name] ?? 0) + change;
@@ -149,7 +133,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       }
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -260,7 +243,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ),
     );
   }
-
   Widget _buildTopBar(BuildContext context) {
     return Row(
       children: [
@@ -281,7 +263,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ],
     );
   }
-
   Widget _circleButton({
     required IconData icon,
     required VoidCallback onPressed,
@@ -297,7 +278,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ),
     );
   }
-
   Widget _buildHeroImage() {
     final isChicken = widget.dish.category == 'Pollos Asados';
     return Container(
@@ -339,7 +319,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ),
     );
   }
-
   Widget _heroLabel(IconData icon, String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -364,7 +343,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ),
     );
   }
-
   Widget _buildDishSummary() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -424,7 +402,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ],
     );
   }
-
   Widget _buildIncludesCard() {
     const items = [
       (Icons.soup_kitchen_outlined, 'Frijoles Charros', 'Caseros calientes'),
@@ -432,7 +409,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       (Icons.local_dining_outlined, 'Salsa Tatemada', 'Al carbón artesanal'),
       (Icons.flatware, 'Tortillas (Trad.)', 'Recién hechas'),
     ];
-
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12),
@@ -532,7 +508,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ),
     );
   }
-
   Widget _buildSectionTitle(String title, {String? tag, String? trailing}) {
     return Row(
       children: [
@@ -576,7 +551,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ],
     );
   }
-
   Widget _buildMarinadeOption(_MarinadeOption option) {
     final selected = _selectedMarinade == option.name;
     return Padding(
@@ -646,7 +620,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ),
     );
   }
-
   Widget _buildCookingOption(String option) {
     final selected = _selectedCooking == option;
     return Material(
@@ -707,7 +680,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ),
     );
   }
-
   Widget _buildExtraOption(_ExtraOption extra) {
     final count = _extraCounts[extra.name] ?? 0;
     return Container(
@@ -776,7 +748,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ),
     );
   }
-
   Widget _extraCountButton({
     required IconData icon,
     required Key key,
@@ -797,7 +768,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ),
     );
   }
-
   Widget _buildOrderBar() {
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
@@ -873,7 +843,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
       ),
     );
   }
-
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -884,26 +853,22 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
     );
   }
 }
-
 class _MarinadeOption {
   const _MarinadeOption({
     required this.name,
     required this.description,
     this.extraPrice = 0,
   });
-
   final String name;
   final String description;
   final int extraPrice;
 }
-
 class _ExtraOption {
   const _ExtraOption({
     required this.name,
     required this.price,
     required this.icon,
   });
-
   final String name;
   final int price;
   final IconData icon;

@@ -1,50 +1,82 @@
 import 'package:flutter/material.dart';
 import '../home/home_screen.dart';
 import 'registro_screen.dart';
-
+import '../../services/auth_service.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
-
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController correoController =
       TextEditingController();
-
   final TextEditingController passwordController =
       TextEditingController();
-
   static const Color rojo = Color(0xFFB7191B);
   static const Color naranja = Color(0xFFFF5A0A);
-
   bool ocultarPassword = true;
-
-  // INICIAR SESIÓN
-  void iniciarSesion() {
-    final String correo = correoController.text.trim();
-    final String password = passwordController.text.trim();
-
-    if (correo.isEmpty || password.isEmpty) {
+  bool iniciandoSesion = false;
+  Future<void> iniciarSesion() async {
+    if (iniciandoSesion) return;
+    final identificador = correoController.text.trim();
+    final password = passwordController.text;
+    if (identificador.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Por favor completa todos los campos'),
+          content: Text(
+            'Por favor completa todos los campos.',
+          ),
           backgroundColor: rojo,
         ),
       );
       return;
     }
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomeScreen(userEmail: correo),
-      ),
-    );
+    setState(() {
+      iniciandoSesion = true;
+    });
+    try {
+      final resultado = await AuthService.iniciarSesion(
+        identificador: identificador,
+        password: password,
+      );
+      final token = resultado['token'];
+      final usuario = resultado['usuario'];
+      if (token is! String ||
+          token.isEmpty ||
+          usuario is! Map<String, dynamic>) {
+        throw Exception(
+          'El servidor devolvió una respuesta inválida.',
+        );
+      }
+      if (!mounted) return;
+      final correoUsuario =
+          usuario['correo']?.toString() ?? identificador;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(
+            userEmail: correoUsuario,
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            error.toString().replaceFirst('Exception: ', ''),
+          ),
+          backgroundColor: rojo,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          iniciandoSesion = false;
+        });
+      }
+    }
   }
-
-  // ENTRAR COMO INVITADO
   void entrarComoInvitado() {
     Navigator.pushReplacement(
       context,
@@ -53,8 +85,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-  // IR A REGISTRO
   void irARegistro() {
     Navigator.push(
       context,
@@ -63,16 +93,13 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
   @override
   void dispose() {
     correoController.dispose();
     passwordController.dispose();
     super.dispose();
   }
-
   @override
-
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFDFCFB),
@@ -81,8 +108,6 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-
-              // ENCABEZADO
               Stack(
                 children: [
                   Container(
@@ -99,7 +124,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-
                   Container(
                     height: 265,
                     decoration: BoxDecoration(
@@ -114,7 +138,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-
                   Positioned(
                     left: 20,
                     bottom: 29,
@@ -128,7 +151,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               width: 34,
                               decoration: BoxDecoration(
                                 color: naranja,
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius:
+                                    BorderRadius.circular(10),
                               ),
                               child: const Icon(
                                 Icons.local_fire_department,
@@ -148,9 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ],
                         ),
-
                         const SizedBox(height: 8),
-
                         const Text(
                           "DUKE'S",
                           style: TextStyle(
@@ -160,9 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             letterSpacing: -1,
                           ),
                         ),
-
                         const SizedBox(height: 5),
-
                         const Text(
                           'BUENA CARNE, MEJORES MOMENTOS',
                           style: TextStyle(
@@ -177,24 +197,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-
-              // FORMULARIO
               Transform.translate(
                 offset: const Offset(0, -8),
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
+                  padding:
+                      const EdgeInsets.fromLTRB(20, 18, 20, 20),
                   decoration: const BoxDecoration(
                     color: Color(0xFFFDFCFB),
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(25),
                     ),
                   ),
-
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
                       const Text(
                         'SISTEMA DE CLIENTES & PEDIDOS',
                         style: TextStyle(
@@ -203,9 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-
                       const SizedBox(height: 9),
-
                       const Text(
                         '¡Hola de nuevo!',
                         style: TextStyle(
@@ -214,9 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontWeight: FontWeight.w900,
                         ),
                       ),
-
                       const SizedBox(height: 5),
-
                       const Text(
                         'Inicia sesión para pedir cortes al carbón, '
                         'acumular puntos y reservar mesa.',
@@ -226,25 +239,22 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 1.5,
                         ),
                       ),
-
                       const SizedBox(height: 18),
-
-                      // CORREO
                       const Text(
-                        'Correo o Teléfono Celular',
+                        'Correo o nombre de usuario',
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-
                       const SizedBox(height: 7),
-
                       TextField(
                         controller: correoController,
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType:
+                            TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          hintText: 'ejemplo@correo.com o 300 123 4567',
+                          hintText:
+                              'ejemplo@correo.com o tu usuario',
                           hintStyle: const TextStyle(
                             color: Color(0xFFA4A0A0),
                             fontSize: 12,
@@ -256,23 +266,27 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           filled: true,
                           fillColor: Colors.white,
-                          contentPadding: const EdgeInsets.symmetric(
+                          contentPadding:
+                              const EdgeInsets.symmetric(
                             vertical: 15,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius:
+                                BorderRadius.circular(12),
                             borderSide: const BorderSide(
                               color: Color(0xFFE7E3E0),
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius:
+                                BorderRadius.circular(12),
                             borderSide: const BorderSide(
                               color: Color(0xFFE7E3E0),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius:
+                                BorderRadius.circular(12),
                             borderSide: const BorderSide(
                               color: rojo,
                               width: 1.3,
@@ -280,12 +294,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 14),
-
-                      // CONTRASEÑA
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
                             'Contraseña',
@@ -294,10 +306,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-
                           GestureDetector(
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(
                                 const SnackBar(
                                   content: Text(
                                     'Recuperación de contraseña',
@@ -316,9 +328,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 7),
-
                       TextField(
                         controller: passwordController,
                         obscureText: ocultarPassword,
@@ -335,7 +345,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {
-                                ocultarPassword = !ocultarPassword;
+                                ocultarPassword =
+                                    !ocultarPassword;
                               });
                             },
                             icon: Icon(
@@ -348,23 +359,27 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           filled: true,
                           fillColor: Colors.white,
-                          contentPadding: const EdgeInsets.symmetric(
+                          contentPadding:
+                              const EdgeInsets.symmetric(
                             vertical: 15,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius:
+                                BorderRadius.circular(12),
                             borderSide: const BorderSide(
                               color: Color(0xFFE7E3E0),
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius:
+                                BorderRadius.circular(12),
                             borderSide: const BorderSide(
                               color: Color(0xFFE7E3E0),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius:
+                                BorderRadius.circular(12),
                             borderSide: const BorderSide(
                               color: rojo,
                               width: 1.3,
@@ -372,180 +387,69 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 14),
-
-                      // BOTÓN INICIAR SESIÓN
                       SizedBox(
                         height: 54,
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: iniciarSesion,
+                          onPressed: iniciandoSesion
+                              ? null
+                              : iniciarSesion,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: rojo,
                             foregroundColor: Colors.white,
                             elevation: 8,
-                            shadowColor: rojo.withValues(alpha: 0.3),
+                            shadowColor:
+                                rojo.withValues(alpha: 0.3),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius:
+                                  BorderRadius.circular(15),
                             ),
                           ),
-                          child: Row(
-                            children: [
-                              Container(
-                                height: 30,
-                                width: 30,
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(8),
+                          child: iniciandoSesion
+                              ? const SizedBox(
+                                  height: 22,
+                                  width: 22,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : Row(
+                                  children: [
+                                    Container(
+                                      height: 30,
+                                      width: 30,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white
+                                            .withValues(alpha: 0.15),
+                                        borderRadius:
+                                            BorderRadius.circular(8),
+                                      ),
+                                      child: const Icon(
+                                        Icons.login,
+                                        size: 19,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    const Text(
+                                      'Iniciar Sesión',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight:
+                                            FontWeight.w900,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    const Icon(
+                                      Icons.arrow_forward,
+                                      size: 22,
+                                    ),
+                                  ],
                                 ),
-                                child: const Icon(
-                                  Icons.login,
-                                  size: 19,
-                                ),
-                              ),
-
-                              const SizedBox(width: 12),
-
-                              const Text(
-                                'Iniciar Sesión',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-
-                              const Spacer(),
-
-                              const Icon(
-                                Icons.arrow_forward,
-                                size: 22,
-                              ),
-                            ],
-                          ),
                         ),
                       ),
-
                       const SizedBox(height: 17),
-
-                      // SEPARADOR
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: Divider(
-                              color: Color(0xFFE8E3DF),
-                            ),
-                          ),
-
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Text(
-                              'O CONÉCTATE CON',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-
-                          const Expanded(
-                            child: Divider(
-                              color: Color(0xFFE8E3DF),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 13),
-
-                      // GOOGLE Y WHATSAPP
-                      Row(
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: 41,
-                              child: OutlinedButton(
-                                onPressed: () {},
-                                style: OutlinedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  side: const BorderSide(
-                                    color: Color(0xFFE7E3E0),
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(11),
-                                  ),
-                                ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'G',
-                                      style: TextStyle(
-                                        color: Color(0xFF4285F4),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      'Google',
-                                      style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(width: 9),
-
-                          Expanded(
-                            child: SizedBox(
-                              height: 41,
-                              child: OutlinedButton(
-                                onPressed: () {},
-                                style: OutlinedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFE8F8F0),
-                                  side: const BorderSide(
-                                    color: Color(0xFF9BEAC7),
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(11),
-                                  ),
-                                ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.chat_outlined,
-                                      color: Color(0xFF009B72),
-                                      size: 16,
-                                    ),
-                                    SizedBox(width: 7),
-                                    Text(
-                                      'WhatsApp',
-                                      style: TextStyle(
-                                        color: Color(0xFF007F62),
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 13),
-
-                      // PEDIR COMO INVITADO
                       SizedBox(
                         height: 53,
                         width: double.infinity,
@@ -556,7 +460,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             foregroundColor: Colors.white,
                             elevation: 3,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius:
+                                  BorderRadius.circular(12),
                             ),
                             padding: const EdgeInsets.symmetric(
                               horizontal: 11,
@@ -568,21 +473,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 31,
                                 width: 31,
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.white
+                                      .withValues(alpha: 0.2),
+                                  borderRadius:
+                                      BorderRadius.circular(8),
                                 ),
                                 child: const Icon(
                                   Icons.restaurant,
                                   size: 18,
                                 ),
                               ),
-
                               const SizedBox(width: 9),
-
                               const Expanded(
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       'Pedir a Domicilio como Invitado',
@@ -599,7 +506,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ],
                                 ),
                               ),
-
                               const Icon(
                                 Icons.chevron_right,
                                 size: 23,
@@ -608,10 +514,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 18),
-
-                      // REGISTRO
                       Center(
                         child: Wrap(
                           alignment: WrapAlignment.center,
@@ -623,7 +526,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fontSize: 11,
                               ),
                             ),
-
                             GestureDetector(
                               onTap: irARegistro,
                               child: const Text(
@@ -642,11 +544,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-
-              // PIE DE PÁGINA
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 9),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 9),
                 decoration: const BoxDecoration(
                   border: Border(
                     top: BorderSide(
@@ -663,9 +564,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontSize: 10,
                       ),
                     ),
-
                     SizedBox(height: 5),
-
                     Text(
                       '© 2026 Asadero Duke’s. Todos los derechos reservados.',
                       style: TextStyle(

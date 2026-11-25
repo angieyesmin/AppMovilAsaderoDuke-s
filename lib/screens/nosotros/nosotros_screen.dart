@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'widgets/nosotros_components.dart';
-
 import '../../config/routes.dart';
 import '../../widgets/app_bottom_navigation.dart';
-
 class NosotrosScreen extends StatelessWidget {
   const NosotrosScreen({super.key});
-
   static const _phone = '9983244530';
   static const _address =
       'Av. Principal del Sabor #142, Col. Asaderos, Ciudad de México, CDMX';
@@ -23,7 +19,6 @@ class NosotrosScreen extends StatelessWidget {
   static const _muted = Color(0xFF806B62);
   static const _line = Color(0xFFF0E5DF);
   static const _pale = Color(0xFFF8EDE7);
-
   Future<void> _openLink(BuildContext context, Uri uri) async {
     final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!context.mounted) return;
@@ -33,7 +28,6 @@ class NosotrosScreen extends StatelessWidget {
       );
     }
   }
-
   void _navigateToTab(BuildContext context, int index) {
     final route = switch (index) {
       0 => AppRoutes.home,
@@ -45,7 +39,6 @@ class NosotrosScreen extends StatelessWidget {
       Navigator.pushReplacementNamed(context, route);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,7 +81,6 @@ class NosotrosScreen extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildHeader(BuildContext context) {
     return Container(
       height: 58,
@@ -150,7 +142,6 @@ class NosotrosScreen extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildHero() {
     return Column(
       children: [
@@ -190,7 +181,6 @@ class NosotrosScreen extends StatelessWidget {
       ],
     );
   }
-
   Widget _buildStoryCard() {
     return NosotrosSectionCard(
       child: Column(
@@ -267,7 +257,6 @@ class NosotrosScreen extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildFireBanner(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(17),
@@ -340,12 +329,10 @@ class NosotrosScreen extends StatelessWidget {
       ),
     );
   }
-
   static final Uri _mapsUri = Uri.https('www.google.com', '/maps/search/', {
     'api': '1',
     'query': _address,
   });
-
   Widget _buildLocationCard(BuildContext context) {
     return NosotrosSectionCard(
       padding: EdgeInsets.zero,
@@ -424,7 +411,6 @@ class NosotrosScreen extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildMarinadesCard(BuildContext context) {
     return NosotrosSectionCard(
       color: const Color(0xFFFCF1E9),
@@ -490,7 +476,6 @@ class NosotrosScreen extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildSocialCard(BuildContext context) {
     return NosotrosSectionCard(
       child: Column(
@@ -550,7 +535,6 @@ class NosotrosScreen extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildFooter() {
     return const Column(
       children: [

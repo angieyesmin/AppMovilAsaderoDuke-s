@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
-
 import 'package:app_asadero_dukes/config/routes.dart';
 import 'package:app_asadero_dukes/widgets/app_bottom_navigation.dart';
-
 class BebidasScreen extends StatefulWidget {
   const BebidasScreen({super.key});
-
   @override
   State<BebidasScreen> createState() => _BebidasScreenState();
 }
-
 class _BebidasScreenState extends State<BebidasScreen> {
   static const Color _background = Color(0xFFFFF8F5);
   static const Color _red = Color(0xFF9F1D0B);
   static const Color _text = Color(0xFF241815);
   static const Color _muted = Color(0xFF806B62);
-
   static const List<_Beverage> _beverages = [
     _Beverage(
       name: 'Coca-Cola 2.5 Litros',
@@ -57,7 +52,6 @@ class _BebidasScreenState extends State<BebidasScreen> {
       icon: Icons.local_cafe_rounded,
     ),
   ];
-
   static const List<String> _filters = [
     'Todos',
     'Familiares (1.35L y 2.5L)',
@@ -74,18 +68,15 @@ class _BebidasScreenState extends State<BebidasScreen> {
     'Individuales & Vidrio': 'Individuales (Vidrio y Lata)',
     'Tés & Especialidades': 'Tés & Especialidades',
   };
-
   String _selectedFilter = 'Todos';
   final Map<String, String> _selectedVariants = {
     'Refresco Familiar 1.35 Litros': 'Coca-Cola',
     'Refresco de Vidrio (500 ml)': 'Coca-Cola Vidrio',
   };
   final List<_CartEntry> _cart = [];
-
   int get _cartCount => _cart.fold(0, (total, item) => total + item.quantity);
   int get _cartTotal =>
       _cart.fold(0, (total, item) => total + item.price * item.quantity);
-
   void _addToCart(_Beverage beverage) {
     final variant = _selectedVariants[beverage.name];
     final itemName = variant == null
@@ -102,7 +93,6 @@ class _BebidasScreenState extends State<BebidasScreen> {
       ),
     );
   }
-
   void _showCart() {
     if (_cart.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -114,7 +104,6 @@ class _BebidasScreenState extends State<BebidasScreen> {
       );
       return;
     }
-
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -169,7 +158,6 @@ class _BebidasScreenState extends State<BebidasScreen> {
       ),
     );
   }
-
   void _navigateToTab(int index) {
     final route = switch (index) {
       0 => AppRoutes.home,
@@ -179,7 +167,6 @@ class _BebidasScreenState extends State<BebidasScreen> {
     };
     if (route != null) Navigator.pushReplacementNamed(context, route);
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -215,7 +202,6 @@ class _BebidasScreenState extends State<BebidasScreen> {
       ),
     );
   }
-
   List<Widget> _buildBeverageSections() {
     final widgets = <Widget>[];
     for (final section in _sections) {
@@ -223,12 +209,10 @@ class _BebidasScreenState extends State<BebidasScreen> {
       if (_selectedFilter != 'Todos' && _selectedFilter != sectionFilter) {
         continue;
       }
-
       final beverages = _beverages
           .where((beverage) => beverage.section == section)
           .toList();
       if (beverages.isEmpty) continue;
-
       widgets.add(_buildSectionHeading(section));
       for (final beverage in beverages) {
         widgets.add(
@@ -248,7 +232,6 @@ class _BebidasScreenState extends State<BebidasScreen> {
     }
     return widgets;
   }
-
   Widget _buildBrandBar() {
     return Row(
       children: [
@@ -306,7 +289,6 @@ class _BebidasScreenState extends State<BebidasScreen> {
       ],
     );
   }
-
   Widget _buildTitleBar() {
     return Row(
       children: [
@@ -396,7 +378,6 @@ class _BebidasScreenState extends State<BebidasScreen> {
       ],
     );
   }
-
   Widget _buildPromoBanner() {
     return Container(
       height: 152,
@@ -479,7 +460,6 @@ class _BebidasScreenState extends State<BebidasScreen> {
       ),
     );
   }
-
   Widget _buildFilters() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -508,7 +488,6 @@ class _BebidasScreenState extends State<BebidasScreen> {
       ),
     );
   }
-
   Widget _buildSectionHeading(String section) {
     final (icon, caption) = switch (section) {
       'Bebidas Familiares' => (Icons.people_alt_outlined, 'PARA COMPARTIR'),
@@ -544,7 +523,6 @@ class _BebidasScreenState extends State<BebidasScreen> {
       ),
     );
   }
-
   Widget _buildServiceNote() {
     return Container(
       padding: const EdgeInsets.all(14),
@@ -585,24 +563,20 @@ class _BebidasScreenState extends State<BebidasScreen> {
     );
   }
 }
-
 class _BeverageCard extends StatelessWidget {
   static const Color _red = Color(0xFF9F1D0B);
   static const Color _text = Color(0xFF241815);
   static const Color _muted = Color(0xFF806B62);
-
   const _BeverageCard({
     required this.beverage,
     required this.selectedVariant,
     required this.onVariantSelected,
     required this.onAdd,
   });
-
   final _Beverage beverage;
   final String? selectedVariant;
   final ValueChanged<String> onVariantSelected;
   final VoidCallback onAdd;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -789,7 +763,6 @@ class _BeverageCard extends StatelessWidget {
     );
   }
 }
-
 class _Beverage {
   const _Beverage({
     required this.name,
@@ -800,7 +773,6 @@ class _Beverage {
     this.badge,
     this.variants = const [],
   });
-
   final String name;
   final String description;
   final int price;
@@ -809,14 +781,12 @@ class _Beverage {
   final String? badge;
   final List<String> variants;
 }
-
 class _CartEntry {
   const _CartEntry({
     required this.name,
     required this.price,
     required this.quantity,
   });
-
   final String name;
   final int price;
   final int quantity;

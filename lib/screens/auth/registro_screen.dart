@@ -1,30 +1,24 @@
-
 import 'package:flutter/material.dart';
-
+import '../../services/auth_service.dart';
 class RegistroScreen extends StatefulWidget {
   const RegistroScreen({super.key});
-
   @override
   State<RegistroScreen> createState() => _RegistroScreenState();
 }
-
 class _RegistroScreenState extends State<RegistroScreen> {
   final _formKey = GlobalKey<FormState>();
-
   final nombreController = TextEditingController();
   final correoController = TextEditingController();
   final telefonoController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmarPasswordController = TextEditingController();
-
   bool mostrarPassword = false;
   bool mostrarConfirmarPassword = false;
   bool aceptarTerminos = false;
   bool recibirPromociones = true;
-
+  bool registrando = false;
   final Color rojo = const Color(0xFFB52B1C);
   final Color naranja = const Color(0xFFFF9800);
-
   @override
   void dispose() {
     nombreController.dispose();
@@ -34,31 +28,65 @@ class _RegistroScreenState extends State<RegistroScreen> {
     confirmarPasswordController.dispose();
     super.dispose();
   }
-
-  void crearCuenta() {
+  Future<void> crearCuenta() async {
+    if (registrando) return;
     if (!_formKey.currentState!.validate()) return;
-
     if (!aceptarTerminos) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'Debes aceptar los términos y condiciones.',
           ),
+          backgroundColor: Colors.red,
         ),
       );
       return;
     }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('¡Datos validados correctamente!'),
-        backgroundColor: Colors.green,
-      ),
-    );
-
-    // Aquí posteriormente conectarás el registro con tu API.
+    final nombreCompleto = nombreController.text.trim();
+    final correo = correoController.text.trim().toLowerCase();
+    final telefono = telefonoController.text.trim();
+    final password = passwordController.text;
+    final nombreUsuario = correo.split('@').first;
+    setState(() {
+      registrando = true;
+    });
+    try {
+      final resultado = await AuthService.registrar(
+        nombreCompleto: nombreCompleto,
+        nombreUsuario: nombreUsuario,
+        correo: correo,
+        password: password,
+        telefono: telefono,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            resultado['mensaje']?.toString() ??
+                'Usuario registrado correctamente.',
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pop(context);
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            error.toString().replaceFirst('Exception: ', ''),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          registrando = false;
+        });
+      }
+    }
   }
-
   Widget campoTexto({
     required String titulo,
     required String hint,
@@ -80,7 +108,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
           ),
         ),
         const SizedBox(height: 5),
-
         SizedBox(
           height: 42,
           child: TextFormField(
@@ -160,23 +187,19 @@ class _RegistroScreenState extends State<RegistroScreen> {
               if (value == null || value.trim().isEmpty) {
                 return 'Este campo es obligatorio';
               }
-
               if (controller == correoController &&
                   !RegExp(r'^[^@]+@[^@]+\.[^@]+$')
                       .hasMatch(value.trim())) {
                 return 'Ingresa un correo válido';
               }
-
               if (controller == passwordController &&
-                  value.length < 6) {
-                return 'Mínimo 6 caracteres';
+                  value.length < 8) {
+                return 'Mínimo 8 caracteres';
               }
-
               if (controller == confirmarPasswordController &&
                   value != passwordController.text) {
                 return 'Las contraseñas no coinciden';
               }
-
               return null;
             },
           ),
@@ -184,7 +207,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
       ],
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -193,12 +215,12 @@ class _RegistroScreenState extends State<RegistroScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-
-              // ENCABEZADO
               Container(
                 width: double.infinity,
                 height: 165,
-                padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
+                padding: const EdgeInsets.fromLTRB(
+                  14, 12, 14, 0,
+                ),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -213,7 +235,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
@@ -221,7 +242,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                       ),
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: Color(0xFFFF9800),
+                          color: const Color(0xFFFF9800),
                           width: 0.7,
                         ),
                         borderRadius: BorderRadius.circular(12),
@@ -235,9 +256,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                         ),
                       ),
                     ),
-
                     const Spacer(),
-
                     Row(
                       children: [
                         Container(
@@ -253,9 +272,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                             size: 20,
                           ),
                         ),
-
                         const SizedBox(width: 7),
-
                         const Text(
                           'ASADERO',
                           style: TextStyle(
@@ -267,7 +284,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
                         ),
                       ],
                     ),
-
                     const Text(
                       "DUKE'S",
                       style: TextStyle(
@@ -277,7 +293,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
                         height: 1.1,
                       ),
                     ),
-
                     const Text(
                       'BUENA CARNE, MEJORES MOMENTOS',
                       style: TextStyle(
@@ -287,13 +302,10 @@ class _RegistroScreenState extends State<RegistroScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                     const SizedBox(height: 8),
                   ],
                 ),
               ),
-
-              // FORMULARIO
               Transform.translate(
                 offset: const Offset(0, -18),
                 child: Container(
@@ -312,7 +324,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         Text(
                           'SISTEMA DE CLIENTES & PEDIDOS',
                           style: TextStyle(
@@ -322,9 +333,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                             letterSpacing: 0.7,
                           ),
                         ),
-
                         const SizedBox(height: 5),
-
                         const Text(
                           '¡Crea tu cuenta!',
                           style: TextStyle(
@@ -333,29 +342,24 @@ class _RegistroScreenState extends State<RegistroScreen> {
                             color: Color(0xFF171717),
                           ),
                         ),
-
                         const SizedBox(height: 4),
-
                         const Text(
-                          'Regístrate para ordenar cortes al carbón, acumular puntos y recibir promociones exclusivas.',
+                          'Regístrate para ordenar cortes al carbón, '
+                          'acumular puntos y recibir promociones exclusivas.',
                           style: TextStyle(
                             fontSize: 9,
                             height: 1.5,
                             color: Color(0xFF777777),
                           ),
                         ),
-
                         const SizedBox(height: 15),
-
                         campoTexto(
                           titulo: 'Nombre completo',
                           hint: 'Juan Pérez',
                           icono: Icons.person_outline,
                           controller: nombreController,
                         ),
-
                         const SizedBox(height: 9),
-
                         campoTexto(
                           titulo: 'Correo Electrónico',
                           hint: 'ejemplo@correo.com',
@@ -363,9 +367,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                           controller: correoController,
                           tipo: TextInputType.emailAddress,
                         ),
-
                         const SizedBox(height: 9),
-
                         campoTexto(
                           titulo: 'Teléfono Celular',
                           hint: '300 123 4567',
@@ -373,9 +375,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                           controller: telefonoController,
                           tipo: TextInputType.phone,
                         ),
-
                         const SizedBox(height: 9),
-
                         campoTexto(
                           titulo: 'Contraseña',
                           hint: '••••••••••••',
@@ -383,9 +383,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                           controller: passwordController,
                           password: true,
                         ),
-
                         const SizedBox(height: 9),
-
                         campoTexto(
                           titulo: 'Confirmar Contraseña',
                           hint: '••••••••••••',
@@ -394,10 +392,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                           password: true,
                           confirmar: true,
                         ),
-
                         const SizedBox(height: 9),
-
-                        // TÉRMINOS Y CONDICIONES
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -416,9 +411,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                                 },
                               ),
                             ),
-
                             const SizedBox(width: 5),
-
                             Expanded(
                               child: Wrap(
                                 children: [
@@ -431,7 +424,8 @@ class _RegistroScreenState extends State<RegistroScreen> {
                                     style: TextStyle(
                                       fontSize: 8,
                                       color: rojo,
-                                      decoration: TextDecoration.underline,
+                                      decoration:
+                                          TextDecoration.underline,
                                     ),
                                   ),
                                   const Text(
@@ -443,7 +437,8 @@ class _RegistroScreenState extends State<RegistroScreen> {
                                     style: TextStyle(
                                       fontSize: 8,
                                       color: rojo,
-                                      decoration: TextDecoration.underline,
+                                      decoration:
+                                          TextDecoration.underline,
                                     ),
                                   ),
                                 ],
@@ -451,8 +446,6 @@ class _RegistroScreenState extends State<RegistroScreen> {
                             ),
                           ],
                         ),
-
-                        // PROMOCIONES
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -471,9 +464,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
                                 },
                               ),
                             ),
-
                             const SizedBox(width: 5),
-
                             const Expanded(
                               child: Text(
                                 'Deseo recibir promociones y novedades por WhatsApp o SMS.',
@@ -486,181 +477,62 @@ class _RegistroScreenState extends State<RegistroScreen> {
                             ),
                           ],
                         ),
-
                         const SizedBox(height: 11),
-
-                        // BOTÓN CREAR CUENTA
                         SizedBox(
                           width: double.infinity,
                           height: 43,
                           child: ElevatedButton(
-                            onPressed: crearCuenta,
+                            onPressed:
+                                registrando ? null : crearCuenta,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: rojo,
                               foregroundColor: Colors.white,
                               elevation: 4,
-                              shadowColor: rojo.withOpacity(0.3),
+                              shadowColor: rojo.withValues(alpha: 0.3),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(11),
+                                borderRadius:
+                                    BorderRadius.circular(11),
                               ),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(
-                                  Icons.person_add_alt_1,
-                                  size: 15,
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  'Crear Cuenta',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
+                            child: registrando
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.person_add_alt_1,
+                                        size: 15,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        'Crear Cuenta',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      Icon(
+                                        Icons.arrow_forward,
+                                        size: 15,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                Spacer(),
-                                Icon(
-                                  Icons.arrow_forward,
-                                  size: 15,
-                                ),
-                              ],
-                            ),
                           ),
                         ),
-
-                        const SizedBox(height: 13),
-
-                        // SEPARADOR
-                        Row(
-                          children: [
-                            const Expanded(
-                              child: Divider(
-                                color: Color(0xFFE5E5E5),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
-                              child: Text(
-                                'O REGÍSTRATE CON',
-                                style: TextStyle(
-                                  fontSize: 7,
-                                  color: Colors.grey[600],
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ),
-                            const Expanded(
-                              child: Divider(
-                                color: Color(0xFFE5E5E5),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 11),
-
-                        // GOOGLE Y WHATSAPP
-                        Row(
-                          children: [
-                            Expanded(
-                              child: SizedBox(
-                                height: 33,
-                                child: OutlinedButton(
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Próximamente: registro con Google.',
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  style: OutlinedButton.styleFrom(
-                                    side: const BorderSide(
-                                      color: Color(0xFFE0E0E0),
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.g_mobiledata,
-                                        color: Color(0xFF4285F4),
-                                        size: 19,
-                                      ),
-                                      Text(
-                                        'Google',
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(width: 8),
-
-                            Expanded(
-                              child: SizedBox(
-                                height: 33,
-                                child: OutlinedButton(
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Próximamente: registro con WhatsApp.',
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  style: OutlinedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFF0FFF8),
-                                    side: const BorderSide(
-                                      color: Color(0xFF9BE8C3),
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.chat,
-                                        color: Color(0xFF07945B),
-                                        size: 13,
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        'WhatsApp',
-                                        style: TextStyle(
-                                          color: Color(0xFF078B56),
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
                         const SizedBox(height: 15),
-
-                        // INICIAR SESIÓN
                         Center(
                           child: Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
+                            crossAxisAlignment:
+                                WrapCrossAlignment.center,
                             children: [
                               const Text(
                                 '¿Ya tienes una cuenta? ',
@@ -685,16 +557,11 @@ class _RegistroScreenState extends State<RegistroScreen> {
                             ],
                           ),
                         ),
-
                         const SizedBox(height: 17),
-
                         const Divider(
                           color: Color(0xFFF0F0F0),
                         ),
-
                         const SizedBox(height: 7),
-
-                        // PIE DE PÁGINA
                         const Center(
                           child: Column(
                             children: [
