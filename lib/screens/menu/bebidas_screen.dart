@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:app_asadero_dukes/config/routes.dart';
 import 'package:app_asadero_dukes/widgets/app_bottom_navigation.dart';
+import 'package:app_asadero_dukes/widgets/cart_bottom_sheet.dart';
 class BebidasScreen extends StatefulWidget {
   const BebidasScreen({super.key});
   @override
@@ -104,58 +105,21 @@ class _BebidasScreenState extends State<BebidasScreen> {
       );
       return;
     }
-    showModalBottomSheet<void>(
+    showCartBottomSheet(
       context: context,
-      showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Tu carrito ($_cartCount)',
-                style: const TextStyle(
-                  color: _text,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Flexible(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: _cart
-                      .map(
-                        (item) => ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            '${item.quantity} × ${item.name}',
-                            style: const TextStyle(fontWeight: FontWeight.w700),
-                          ),
-                          trailing: Text('\$${item.price * item.quantity}'),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ),
-              const Divider(),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  'Total: \$$_cartTotal MXN',
-                  style: const TextStyle(
-                    color: _red,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      itemCount: _cartCount,
+      items: _cart
+          .map(
+            (item) => CartSheetItem(
+              name: item.name,
+              quantity: item.quantity,
+              totalPrice: item.price * item.quantity,
+            ),
+          )
+          .toList(),
+      subtotal: _cartTotal,
+      total: _cartTotal,
+      statusLabel: 'BIEN FRÍAS 🧊',
     );
   }
   void _navigateToTab(int index) {

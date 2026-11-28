@@ -90,8 +90,10 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.shopping_bag_outlined));
     await tester.pumpAndSettle();
+    expect(find.text('A TU GUSTO 🥣'), findsOneWidget);
     expect(find.text('1 × Salsa Tatemada verde asada'), findsOneWidget);
     expect(find.text('Total: \$40 MXN'), findsOneWidget);
+    expect(find.text('CONFIRMAR PEDIDO'), findsOneWidget);
   });
 
   testWidgets('Home opens beverages and adds the selected flavor to cart', (
@@ -132,11 +134,13 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.shopping_bag_outlined));
     await tester.pumpAndSettle();
+    expect(find.text('BIEN FRÍAS 🧊'), findsOneWidget);
     expect(
       find.text('1 × Refresco Familiar 1.35 Litros · Mundet'),
       findsOneWidget,
     );
     expect(find.text('Total: \$35 MXN'), findsOneWidget);
+    expect(find.text('CONFIRMAR PEDIDO'), findsOneWidget);
   });
 
   testWidgets('Home profile icon opens the account profile', (
@@ -240,8 +244,20 @@ void main() {
     await tester.tap(find.byIcon(Icons.shopping_bag_outlined));
     await tester.pumpAndSettle();
 
+    expect(find.text('ASADOR LISTO 🔥'), findsOneWidget);
     expect(find.text('1 × Pollo Doble'), findsOneWidget);
     expect(find.textContaining('1 × 1/2 Frijol Charro Extra'), findsOneWidget);
+    expect(find.text('Subtotal platillos'), findsOneWidget);
+    expect(find.text('Complementos y personalizaciones'), findsOneWidget);
     expect(find.text('Total: \$295 MXN'), findsOneWidget);
+    expect(find.text('CONFIRMAR PEDIDO'), findsOneWidget);
+    expect(find.text('Agregar más platillos al carrito'), findsOneWidget);
+
+    await tester.tap(find.text('CONFIRMAR PEDIDO'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('La confirmación de pedidos aún no está disponible.'),
+      findsOneWidget,
+    );
   });
 }
